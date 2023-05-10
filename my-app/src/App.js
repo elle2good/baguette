@@ -26,10 +26,10 @@ class App extends Component {
     web3: null,
     currentAccounts: null,
     //ZKEVM : 0x74fC142f8482c1a9E8092c0D7dfb3a3ddeE3943A
-    ERC20contractAddress: "0x74fC142f8482c1a9E8092c0D7dfb3a3ddeE3943A",
-    ERC721contractAddress: "0x1f6fE789B06E9696c7944A0c541C0c1E3E983787",
-    ERC1155contractAddress: "0x29cd2e75cDbfFC63036f689BBDb78b357c66De1B",
-    rewardContractAddress: "0x80859bb7A555a1384753aF5C01028D9187C089d4",
+    ERC20contractAddress: "0xcC3B025701782316764296c4D23399A099D257b4",
+    ERC721contractAddress: "0x2491527DD8eD8c7F40f09c56b814C1f6eDDD6875",
+    ERC1155contractAddress: "0xdA4107E898782fDa3931069BFafa4a34d332a790",
+    rewardContractAddress: "0x00f6aC1d75dE1587dF37E172650c840e46D4B86E",
     ethereumBalance: "",
     receiverAddress: "",
     transferValue: "",
@@ -179,26 +179,26 @@ class App extends Component {
   };
 
   // ERC20 토큰 구매
-  buyTokens1 = async (amount) => {
-    const web3 = this.state.web3;
-    const getInfo = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
-    const from = this.state.currentAccounts[0];
-    const amount1 = web3.utils.toWei(String(amount), "ether");
-
-    // 토큰 구입 함수 호출을 위한 트랜잭션 객체 생성
-    const transaction = {
-      to: this.state.ERC20contractAddress,
-      from: from,
-      value: amount1,
-      data: getInfo.methods.buyTokens().encodeABI()
-    };
-    // 트랜잭션 전송
-  await web3.eth.sendTransaction(transaction);
-
-  // 토큰 구입 완료 이벤트 출력
-  console.log(`Bought ${amount} tokens.`);
-
-  };
+  //buyTokens1 = async (amount) => {
+  //  const web3 = this.state.web3;
+  //  const getInfo = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
+  //  const from = this.state.currentAccounts[0];
+  //  const amount1 = web3.utils.toWei(String(amount), "ether");
+//
+  //  // 토큰 구입 함수 호출을 위한 트랜잭션 객체 생성
+  //  const transaction = {
+  //    to: this.state.ERC20contractAddress,
+  //    from: from,
+  //    value: amount1,
+  //    data: getInfo.methods.buyTokens().encodeABI()
+  //  };
+  //  // 트랜잭션 전송
+  //await web3.eth.sendTransaction(transaction);
+//
+  //// 토큰 구입 완료 이벤트 출력
+  //console.log(`Bought ${amount} tokens.`);
+//
+  //};
 
 
 
@@ -435,11 +435,13 @@ fMintByETH_FT = async (id) => {
   const web3 = this.state.web3;
   const contract = new web3.eth.Contract(ERC1155, this.state.ERC1155contractAddress);
   const from = this.state.currentAccounts[0];
-  const price = 1;
-  const valueToSend = web3.utils.toWei(String(price), "ether");
+  const price = web3.utils.toWei("1", "wei"); // 수정된 코드
+  console.log(from)
+  console.log(id)
+  console.log(this.state.rewardContractAddress)
   //id는 받아오는걸로 수정해야함
   try {
-    const data = contract.methods.mintByETH(from, id, this.state.rewardContractAddress).encodeABI();
+    const data = contract.methods.mint(from, id, this.state.rewardContractAddress).encodeABI();
 
     window.ethereum.request({
       method: "eth_sendTransaction",
@@ -447,7 +449,7 @@ fMintByETH_FT = async (id) => {
         {
           from: from,
           to: this.state.ERC1155contractAddress,
-          value: valueToSend,
+          value: web3.utils.toHex(web3.utils.toWei(price)),
           data,
         },
       ],
@@ -572,7 +574,7 @@ fStartVote = async () => {
   const web3 = this.state.web3;
   const contract = new web3.eth.Contract(Reward, this.state.rewardContractAddress);
   const from = this.state.currentAccounts[0];
-  const valueToSend = web3.utils.toWei(String(2), "ether");
+  const valueToSend = web3.utils.toWei(String(2), "wei");
   //id는 받아오는걸로 수정해야함
   try {
     const data = contract.methods.startVote().encodeABI();
@@ -583,7 +585,7 @@ fStartVote = async () => {
         {
           from: from,
           to: this.state.rewardContractAddress,
-          value: valueToSend,
+          value: web3.utils.toHex(web3.utils.toWei(valueToSend)),
           data,
         },
       ],
@@ -667,14 +669,14 @@ fVotes_view = async (id) => {
         />
         <button onClick={() => this.transferETH(this.state.receiverAddress, this.state.transferValue)}>이더 전송</button>
 
-        <h2>토큰 구매</h2>
+      {/*  <h2>토큰 구매</h2>
         <input
           type="text"
           value={this.state.tokenAmount}
           onChange={(e) => this.setState({ tokenAmount: e.target.value })}
           placeholder="토큰 구매량"
         />
-        <button onClick={() => this.buyTokens1(this.state.tokenAmount)}>토큰 구매</button>
+        <button onClick={() => this.buyTokens1(this.state.tokenAmount)}>토큰 구매</button> */}
 
         <h2>토큰 전송</h2>
         <input
@@ -744,9 +746,9 @@ fVotes_view = async (id) => {
           type="text"
           value={this.state.VMintByETH_FT}
           onChange={(e) => this.setState({ VMintByETH_FT: e.target.value })}
-          placeholder="이건 remove 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께"
+          placeholder="1155 nft 민팅"
         />
-        <button onClick={() => this.fMintByETH_FT(this.state.VMintByETH_FT)}>이건 remove 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께</button>
+        <button onClick={() => this.fMintByETH_FT(this.state.VMintByETH_FT)}>1155 nft 민팅</button>
 
         <br/>
         <br/>
