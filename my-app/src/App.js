@@ -6,7 +6,6 @@ componentDidMount() 함수가 호출되어 MetaMask 연결을 설정합니다.
 여기서 connectToMetaMask() 함수를 호출하며, 계정 변경 이벤트 및 
 네트워크 변경 이벤트를 처리하기 위한 리스너를 설정합니다.
 
-
 MetaMask에 연결 버튼 클릭 시:
 connectToMetaMask() 함수가 실행되어 사용자가 MetaMask에 연결을 요청하고, 
 Web3 인스턴스를 생성합니다. 그리고 연결된 계정을 가져오고, 해당 계정의 
@@ -25,8 +24,11 @@ class App extends Component {
   state = {
     web3: null,
     currentAccounts: null,
-    ERC20contractAddress: "0x2F48E019cD462ace37398dED4e2D81A454BC219a",
-    ERC721contractAddress: "0x1958A7A5bf4d4F0ff63BB86F83E4dDC4F52FABaD",
+    //ZKEVM : 0x74fC142f8482c1a9E8092c0D7dfb3a3ddeE3943A
+    ERC20contractAddress: "0x74fC142f8482c1a9E8092c0D7dfb3a3ddeE3943A",
+    ERC721contractAddress: "0x1f6fE789B06E9696c7944A0c541C0c1E3E983787",
+    ERC1155contractAddress: "0x29cd2e75cDbfFC63036f689BBDb78b357c66De1B",
+    rewardContractAddress: "0x80859bb7A555a1384753aF5C01028D9187C089d4",
     ethereumBalance: "",
     receiverAddress: "",
     transferValue: "",
@@ -75,12 +77,12 @@ class App extends Component {
     return currentAccounts;
   };
 
-    // 현재 MetaMask 연결된 계정 가져오기
-    getBalance = async (web3) => {
-      const currentAccounts = await web3.eth.getBalance();
-      this.setState({ currentAccounts });
-      return currentAccounts;
-    };
+  // 현재 MetaMask 연결된 계정 가져오기
+  getBalance = async (web3) => {
+    const currentAccounts = await web3.eth.getBalance();
+    this.setState({ currentAccounts });
+    return currentAccounts;
+  };
 
 
   // 현재 연결된 계정의 이더리움 잔액 가져오기
@@ -217,6 +219,21 @@ class App extends Component {
       console.error("Error:", error);
     }
   };
+
+
+  checkNFTOwner = async () => {
+    if (!this.state.currentAccounts || this.state.currentAccounts.length === 0) {
+      console.error("currentAccounts is not initialized");
+      return;
+    }
+  
+    const web3 = this.state.web3;
+    const tokenContract = new web3.eth.Contract(ERC721, this.state.ERC721contractAddress);
+    const tokenBalance = await tokenContract.methods.balanceOf(this.state.currentAccounts[0]).call();
+    return tokenBalance;
+  };
+
+  
   
 
   transferToken12 = async (to, value) => {
@@ -245,24 +262,22 @@ class App extends Component {
     }
   };
 
-
   fetchImageMetadata = async () => {
-
     if (!this.state.currentAccounts || this.state.currentAccounts.length === 0) {
       console.error("currentAccounts is not initialized");
       return;
     }
-
+  
     const web3 = this.state.web3;
     const tokenContract = new web3.eth.Contract(ERC721, this.state.ERC721contractAddress);
-
-    
-    const tokenBalance = await tokenContract.methods.balanceOf(this.state.currentAccounts[0]).call();
-
-    if(tokenBalance >= 1) {
-
-      const metadataUrl = "https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/1";
+    const tokenBalance = await this.checkNFTOwner();
+  
+    if (tokenBalance >= 1) {
+      const tokenId = await tokenContract.methods.tokenOfOwner(this.state.currentAccounts[0]).call();
+      const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/${tokenId}`;
+      console.log(metadataUrl)
       try {
+        //try catch 추가
         const response = await fetch(metadataUrl);
         const metadata = await response.json();
         const imageUrl = metadata.image;
@@ -332,11 +347,6 @@ class App extends Component {
 
         <h2>이미지</h2>
         {this.state.imageUrl && <img src={this.state.imageUrl} alt="NFT Image" width="100" height="100" />}
-
-        {/*<div>
-        <button onClick={this.fetchImageMetadata}>이미지 가져오기</button>
-        {this.state.imageUrl && <img src={this.state.imageUrl} alt="NFT Image" width="100" height="100" />}
-        </div> */}
 
       </div>
     );    
