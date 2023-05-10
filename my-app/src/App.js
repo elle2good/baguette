@@ -17,9 +17,10 @@ import React, { Component } from "react";
 import Web3 from "web3";
 import ERC20 from "./abi/ERC20.json"; // ERC20 JSON import
 import ERC721 from "./abi/ERC721.json";
+import ERC1155 from "./abi/ERC1155.json";
+import Reward from "./abi/Reward.json";
 
 class App extends Component {
-
   //state 객체의 속성 값이 변경되면 render() 메소드가 다시 호출되어 UI가 갱신
   state = {
     web3: null,
@@ -37,6 +38,17 @@ class App extends Component {
     sendAmount: "",
     toMintPrice: 0,
     imageUrl: "",
+    VAddController: "",
+    VRemoveController: "",
+    VMintByETH_FT:"",
+    VBalanceOf: "",
+    VCheckAndClaimGoodToken:"",
+    VExchangeEther:"",
+    VExchangeTokens: "",
+    VStartVote: "",
+    VVoteId: "",
+    VVoteIs: "",
+    VVotes_view: "",
   };
 
   async componentDidMount() {
@@ -142,7 +154,7 @@ class App extends Component {
   };
   
   // 이더리움 전송
-  transferToken = async (from, value) => {
+  transferETH = async (from, value) => {
   const myAddress = this.state.currentAccounts[0];
 
   try {
@@ -188,37 +200,6 @@ class App extends Component {
 
   };
 
-  mintByETH = async () => {
-    const web3 = this.state.web3;
-    const contract = new web3.eth.Contract(ERC721, this.state.ERC721contractAddress);
-    const from = this.state.currentAccounts[0];
-    const price = 0;
-    const valueToSend = web3.utils.toWei(String(price), "ether");
-  
-    try {
-      const data = contract.methods.mintByETH(1).encodeABI();
-  
-      window.ethereum.request({
-        method: "eth_sendTransaction",
-        params: [
-          {
-            from: from,
-            to: this.state.ERC721contractAddress,
-            value: valueToSend,
-            data,
-          },
-        ],
-      })
-      .then(() => {
-        console.log(`Successfully minted 1 NFT.`);
-      })
-      .catch((e) => {
-        console.error("Error minting tokens:", e);
-      });
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
 
   checkNFTOwner = async () => {
@@ -236,7 +217,7 @@ class App extends Component {
   
   
 
-  transferToken12 = async (to, value) => {
+  transferToken = async (to, value) => {
     const web3 = this.state.web3;
     const tokenContract = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
 
@@ -261,6 +242,161 @@ class App extends Component {
         console.error("Error:", error);
     }
   };
+
+  fAddController = async (to) => {
+    const web3 = this.state.web3;
+    const tokenContract = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
+
+    try {
+        const data = tokenContract.methods.addController(to).encodeABI(); // 'to' 인자를 함수에 전달
+
+        window.ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+                from: this.state.currentAccounts[0],
+                to: this.state.ERC20contractAddress,  // Use the contract address instead of 'get_token'
+                data,
+            }],
+        })
+        .then(() => {
+            alert("Woot! Controller added successfully!");
+        })
+        .catch((e) => {
+            alert("Oops! Adding controller failed!");
+        })
+    } catch (error) {
+        console.error("Error:", error);
+    }
+};
+
+fRemoveController = async (to) => {
+  const web3 = this.state.web3;
+  const tokenContract = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
+
+  try {
+      const data = tokenContract.methods.removeController(to).encodeABI(); // 'to' 인자를 함수에 전달
+
+      window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+              from: this.state.currentAccounts[0],
+              to: this.state.ERC20contractAddress,  // Use the contract address instead of 'get_token'
+              data,
+          }],
+      })
+      .then(() => {
+          alert("Woot! Controller added successfully!");
+      })
+      .catch((e) => {
+          alert("Oops! Adding controller failed!");
+      })
+  } catch (error) {
+      console.error("Error:", error);
+  }
+};
+
+
+/////////////
+//   NFT   //
+/////////////
+
+fSetSale = async () => {
+  const web3 = this.state.web3;
+  const tokenContract = new web3.eth.Contract(ERC721, this.state.ERC721contractAddress);
+
+  try {
+      const data = tokenContract.methods.setSale().encodeABI(); // 'to' 인자를 함수에 전달
+
+      window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+              from: this.state.currentAccounts[0],
+              to: this.state.ERC20contractAddress,  // Use the contract address instead of 'get_token'
+              data,
+          }],
+      })
+      .then(() => {
+          alert("Woot! Controller added successfully!");
+      })
+      .catch((e) => {
+          alert("Oops! Adding controller failed!");
+      })
+  } catch (error) {
+      console.error("Error:", error);
+  }
+};
+
+
+
+fMintByETH = async () => {
+  const web3 = this.state.web3;
+  const contract = new web3.eth.Contract(ERC721, this.state.ERC721contractAddress);
+  const from = this.state.currentAccounts[0];
+  const price = 0;
+  const valueToSend = web3.utils.toWei(String(price), "ether");
+
+  try {
+    const data = contract.methods.mintByETH(1).encodeABI();
+
+    window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from: from,
+          to: this.state.ERC721contractAddress,
+          value: valueToSend,
+          data,
+        },
+      ],
+    })
+    .then(() => {
+      console.log(`Successfully minted 1 NFT.`);
+    })
+    .catch((e) => {
+      console.error("Error minting tokens:", e);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+fTeamMint = async () => {
+  const web3 = this.state.web3;
+  const contract = new web3.eth.Contract(ERC721, this.state.ERC721contractAddress);
+  const from = this.state.currentAccounts[0];
+  const price = 0;
+  const valueToSend = web3.utils.toWei(String(price), "ether");
+
+  try {
+    const data = contract.methods.teamMint(1).encodeABI();
+
+    window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from: from,
+          to: this.state.ERC721contractAddress,
+          value: valueToSend,
+          data,
+        },
+      ],
+    })
+    .then(() => {
+      console.log(`Successfully minted 1 NFT.`);
+    })
+    .catch((e) => {
+      console.error("Error minting tokens:", e);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+
+
+
+
+
 
   fetchImageMetadata = async () => {
     if (!this.state.currentAccounts || this.state.currentAccounts.length === 0) {
@@ -288,6 +424,221 @@ class App extends Component {
     }
   };
 
+
+
+/////////////////
+//   ERC1155   //
+/////////////////
+
+/* 수정사항 필요 < id 값을 받아와야함 */
+fMintByETH_FT = async (id) => {
+  const web3 = this.state.web3;
+  const contract = new web3.eth.Contract(ERC1155, this.state.ERC1155contractAddress);
+  const from = this.state.currentAccounts[0];
+  const price = 1;
+  const valueToSend = web3.utils.toWei(String(price), "ether");
+  //id는 받아오는걸로 수정해야함
+  try {
+    const data = contract.methods.mintByETH(from, id, this.state.rewardContractAddress).encodeABI();
+
+    window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from: from,
+          to: this.state.ERC1155contractAddress,
+          value: valueToSend,
+          data,
+        },
+      ],
+    })
+    .then(() => {
+      console.log(`Successfully minted 1 NFT.`);
+    })
+    .catch((e) => {
+      console.error("Error minting tokens:", e);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+
+fBalanceOf = async (id) => {
+
+  const web3 = this.state.web3;
+  const tokenContract = new web3.eth.Contract(ERC1155, this.state.ERC1155contractAddress);
+
+  const tokenId = await tokenContract.methods.balanceOf(this.state.currentAccounts[0], id).call();
+  console.log(tokenId);
+
+};
+
+
+//////////////
+//  REWARD  //
+//////////////
+
+fCheckAndClaimGoodToken = async (vote) => {
+  const web3 = this.state.web3;
+  const tokenContract = new web3.eth.Contract(Reward, this.state.rewardContractAddress);
+  //vote 또한 인자로 가져와야함
+  try {
+      const data = tokenContract.methods.checkAndClaimGoodToken(vote).encodeABI(); 
+
+      window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+              from: this.state.currentAccounts[0],
+              to: this.state.rewardContractAddress,
+              data,
+          }],
+      })
+      .then(() => {
+          alert("Woot! Controller added successfully!");
+      })
+      .catch((e) => {
+          alert("Oops! Adding controller failed!");
+      })
+  } catch (error) {
+      console.error("Error:", error);
+  }
+};
+
+
+fExchangeEther = async (getPrice) => {
+  const web3 = this.state.web3;
+  const contract = new web3.eth.Contract(Reward, this.state.rewardContractAddress);
+  const from = this.state.currentAccounts[0];
+  //id는 받아오는걸로 수정해야함
+  try {
+    const data = contract.methods.exchangeEther(getPrice).encodeABI();
+
+    window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from: from,
+          to: this.state.rewardContractAddress,
+          data,
+        },
+      ],
+    })
+    .then(() => {
+      console.log(`Successfully exchange ether`);
+    })
+    .catch((e) => {
+      console.error("Error minting tokens:", e);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+
+fExchangeTokens = async (getPrice) => {
+  const web3 = this.state.web3;
+  const contract = new web3.eth.Contract(Reward, this.state.rewardContractAddress);
+  const from = this.state.currentAccounts[0];
+  const valueToSend = web3.utils.toWei(String(getPrice), "ether");
+  //id는 받아오는걸로 수정해야함
+  try {
+    const data = contract.methods.exchangeTokens(valueToSend).encodeABI();
+
+    window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from: from,
+          to: this.state.rewardContractAddress,
+          value: valueToSend,
+          data,
+        },
+      ],
+    })
+    .then(() => {
+      console.log(`Successfully minted 1 NFT.`);
+    })
+    .catch((e) => {
+      console.error("Error minting tokens:", e);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+
+fStartVote = async () => {
+  const web3 = this.state.web3;
+  const contract = new web3.eth.Contract(Reward, this.state.rewardContractAddress);
+  const from = this.state.currentAccounts[0];
+  const valueToSend = web3.utils.toWei(String(2), "ether");
+  //id는 받아오는걸로 수정해야함
+  try {
+    const data = contract.methods.startVote().encodeABI();
+
+    window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from: from,
+          to: this.state.rewardContractAddress,
+          value: valueToSend,
+          data,
+        },
+      ],
+    })
+    .then(() => {
+      console.log(`Successfully minted 1 NFT.`);
+    })
+    .catch((e) => {
+      console.error("Error minting tokens:", e);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+
+fVote = async (id, is) => {
+  const web3 = this.state.web3;
+  const contract = new web3.eth.Contract(Reward, this.state.rewardContractAddress);
+  const from = this.state.currentAccounts[0];
+  //id는 받아오는걸로 수정해야함
+
+  try {
+    const data = contract.methods.vote(id, is).encodeABI();
+
+    window.ethereum.request({
+      method: "eth_sendTransaction",
+      params: [
+        {
+          from: from,
+          to: this.state.rewardContractAddress,
+          data,
+        },
+      ],
+    })
+    .then(() => {
+      console.log(`Successfully exchange ether`);
+    })
+    .catch((e) => {
+      console.error("Error minting tokens:", e);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+fVotes_view = async (id) => {
+  const web3 = this.state.web3;
+  const contract = new web3.eth.Contract(Reward, this.state.rewardContractAddress);
+  //id는 받아오는걸로 수정해야함
+
+  const data = contract.methods.votes(id).call();
+  console.log(data);
+};
+
   render() {
     return (
       <div>
@@ -314,7 +665,7 @@ class App extends Component {
           onChange={(e) => this.setState({ transferValue: e.target.value })}
           placeholder="이더 전송량"
         />
-        <button onClick={() => this.transferToken(this.state.receiverAddress, this.state.transferValue)}>이더 전송</button>
+        <button onClick={() => this.transferETH(this.state.receiverAddress, this.state.transferValue)}>이더 전송</button>
 
         <h2>토큰 구매</h2>
         <input
@@ -338,15 +689,156 @@ class App extends Component {
           onChange={(e) => this.setState({ sendAmount: e.target.value })}
           placeholder="토큰 전송량"
         />
-        <button onClick={() => this.transferToken12(this.state.sendTo, this.state.sendAmount)}>토큰 전송</button>
+        <button onClick={() => this.transferToken(this.state.sendTo, this.state.sendAmount)}>토큰 전송</button>
 
 
         <h2>프로필 NFT 구매</h2>
         <h3>프로필은 아이디당 단 1번 1개만 구입이 가능합니다. 본인의 아이디를 다른 사람에게 trnasfer 한 뒤에도 구입이 불가합니다.</h3>
-        <button onClick={() => this.mintByETH()}>NFT 구매</button>
+        <button onClick={() => this.fMintByETH()}>NFT 구매</button>
 
         <h2>이미지</h2>
         {this.state.imageUrl && <img src={this.state.imageUrl} alt="NFT Image" width="100" height="100" />}
+
+
+        <br/>
+        <br/>
+
+        <input
+          type="text"
+          value={this.state.VAddController}
+          onChange={(e) => this.setState({ VAddController: e.target.value })}
+          placeholder="이건 add 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께"
+        />
+        <button onClick={() => this.fAddController(this.state.VAddController)}>이건 add 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께</button>
+
+        <br/>
+        <br/>
+        <br/>
+
+        <input
+          type="text"
+          value={this.state.VRemoveController}
+          onChange={(e) => this.setState({ VRemoveController: e.target.value })}
+          placeholder="이건 remove 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께"
+        />
+        <button onClick={() => this.fRemoveController(this.state.VRemoveController)}>이건 remove 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께</button>
+
+
+        <br/>
+        <br/>
+        <br/>
+        <button onClick={() => this.fSetSale()}>이건 remove 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께</button>
+
+
+        <br/>
+        <br/>
+
+        <h2>프로필 NFT 구매</h2>
+        <h3>프로필은 아이디당 단 1번 1개만 구입이 가능합니다. 본인의 아이디를 다른 사람에게 trnasfer 한 뒤에도 구입이 불가합니다.</h3>
+        <button onClick={() => this.fTeamMint()}>팀 NFT 구매</button>
+
+        <br/>
+        <br/>
+
+        <input
+          type="text"
+          value={this.state.VMintByETH_FT}
+          onChange={(e) => this.setState({ VMintByETH_FT: e.target.value })}
+          placeholder="이건 remove 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께"
+        />
+        <button onClick={() => this.fMintByETH_FT(this.state.VMintByETH_FT)}>이건 remove 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께</button>
+
+        <br/>
+        <br/>
+
+        <input
+          type="text"
+          value={this.state.VBalanceOf}
+          onChange={(e) => this.setState({ VBalanceOf: e.target.value })}
+          placeholder="이건 내가 몇개 ERC1155 있는지 확인하는곳"
+        />
+        <button onClick={() => this.fBalanceOf(this.state.VBalanceOf)}>이건 내가 몇개 ERC1155 있는지 확인하는곳</button>
+
+
+        <br/>
+        <br/>
+
+        <input
+          type="text"
+          value={this.state.VCheckAndClaimGoodToken}
+          onChange={(e) => this.setState({ VCheckAndClaimGoodToken: e.target.value })}
+          placeholder="심사 후 클레임 (나의 보트 번호 넣는곳)"
+        />
+        <button onClick={() => this.fBalanceOf(this.state.VCheckAndClaimGoodToken)}>클레임 받기</button>
+
+
+        <br/>
+        <br/>
+        <br/>
+
+        <input
+          type="text"
+          value={this.state.VExchangeEther}
+          onChange={(e) => this.setState({ VExchangeEther: e.target.value })}
+          placeholder="exchange ether"
+        />
+        <button onClick={() => this.fBalanceOf(this.state.VExchangeEther)}>exchange ether</button>
+
+        <br/>
+        <br/>
+        <br/>
+
+        <input
+          type="text"
+          value={this.state.VExchangeTokens}
+          onChange={(e) => this.setState({ VExchangeTokens: e.target.value })}
+          placeholder="exchange token"
+        />
+        <button onClick={() => this.fExchangeTokens(this.state.VExchangeTokens)}>exchange token</button>
+
+
+        <br/>
+        <br/>
+        <br/>
+
+
+        <button onClick={() => this.fStartVote()}>투표 시작</button>
+
+
+
+        <br/>
+        <br/>
+        <br/>
+
+
+        <input
+          type="text"
+          value={this.state.VVoteId}
+          onChange={(e) => {
+            console.log('투표 id', e.target.value);
+            this.setState({ VVoteId: e.target.value });
+          }}
+
+          placeholder="투표 id"
+        />
+        <input
+          type="text"
+          value={this.state.VVoteIs}
+          onChange={(e) => this.setState({ VVoteIs: e.target.value })}
+          placeholder="true or false"
+        />
+        <button onClick={() => this.fVote(this.state.VVoteId, this.state.VVoteIs)}>이더 전송</button>
+
+        <br/>
+        <br/>
+
+        <input
+          type="text"
+          value={this.state.VVotes_view}
+          onChange={(e) => this.setState({ VVotes_view: e.target.value })}
+          placeholder="보팅 데이터 (숫자 0번부터 대입 가능"
+        />
+        <button onClick={() => this.fVotes_view(this.state.VVotes_view)}>이더 전송</button>
 
       </div>
     );    
