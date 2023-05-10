@@ -637,6 +637,9 @@ fVotes_view = async (id) => {
   const contract = new web3.eth.Contract(Reward, this.state.rewardContractAddress);
   //id는 받아오는걸로 수정해야함
 
+  //promise는 await로 가져오면 됌
+  // const data = await contract.methods.votes(id).call();
+  // console.log(data.proposer);
   const data = contract.methods.votes(id).call();
   console.log(data);
 };
@@ -840,7 +843,7 @@ fVotes_view = async (id) => {
           onChange={(e) => this.setState({ VVotes_view: e.target.value })}
           placeholder="보팅 데이터 (숫자 0번부터 대입 가능"
         />
-        <button onClick={() => this.fVotes_view(this.state.VVotes_view)}>이더 전송</button>
+        <button onClick={() => this.fVotes_view(this.state.VVotes_view)}>확인</button>
 
       </div>
     );    
