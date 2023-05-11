@@ -201,7 +201,6 @@ class App extends Component {
   //};
 
 
-
   checkNFTOwner = async () => {
     if (!this.state.currentAccounts || this.state.currentAccounts.length === 0) {
       console.error("currentAccounts is not initialized");
@@ -213,9 +212,6 @@ class App extends Component {
     const tokenBalance = await tokenContract.methods.balanceOf(this.state.currentAccounts[0]).call();
     return tokenBalance;
   };
-
-  
-  
 
   transferToken = async (to, value) => {
     const web3 = this.state.web3;
@@ -311,7 +307,7 @@ fSetSale = async () => {
           method: 'eth_sendTransaction',
           params: [{
               from: this.state.currentAccounts[0],
-              to: this.state.ERC20contractAddress,  // Use the contract address instead of 'get_token'
+              to: this.state.ERC721contractAddress,  // Use the contract address instead of 'get_token'
               data,
           }],
       })
@@ -393,11 +389,6 @@ fTeamMint = async () => {
 };
 
 
-
-
-
-
-
   fetchImageMetadata = async () => {
     if (!this.state.currentAccounts || this.state.currentAccounts.length === 0) {
       console.error("currentAccounts is not initialized");
@@ -424,8 +415,6 @@ fTeamMint = async () => {
     }
   };
 
-
-
 /////////////////
 //   ERC1155   //
 /////////////////
@@ -436,9 +425,6 @@ fMintByETH_FT = async (id) => {
   const contract = new web3.eth.Contract(ERC1155, this.state.ERC1155contractAddress);
   const from = this.state.currentAccounts[0];
   const price = web3.utils.toWei("1", "wei"); // 수정된 코드
-  console.log(from)
-  console.log(id)
-  console.log(this.state.rewardContractAddress)
   //id는 받아오는걸로 수정해야함
   try {
     const data = contract.methods.mint(from, id, this.state.rewardContractAddress).encodeABI();
@@ -467,13 +453,10 @@ fMintByETH_FT = async (id) => {
 
 
 fBalanceOf = async (id) => {
-
   const web3 = this.state.web3;
   const tokenContract = new web3.eth.Contract(ERC1155, this.state.ERC1155contractAddress);
-
   const tokenId = await tokenContract.methods.balanceOf(this.state.currentAccounts[0], id).call();
   console.log(tokenId);
-
 };
 
 
@@ -732,7 +715,7 @@ fVotes_view = async (id) => {
         <br/>
         <br/>
         <br/>
-        <button onClick={() => this.fSetSale()}>이건 remove 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께</button>
+        <button onClick={() => this.fSetSale()}>NFT 셋 세일 버튼. 누르면 NFT 판매 시작됌</button>
 
 
         <br/>
@@ -751,7 +734,7 @@ fVotes_view = async (id) => {
           onChange={(e) => this.setState({ VMintByETH_FT: e.target.value })}
           placeholder="1155 nft 민팅"
         />
-        <button onClick={() => this.fMintByETH_FT(this.state.VMintByETH_FT)}>1155 nft 민팅</button>
+        <button onClick={() => this.fMintByETH_FT(this.state.VMintByETH_FT)}>1155 nft 민팅 1번부터 4번까지 번호 넣기</button>
 
         <br/>
         <br/>
@@ -774,7 +757,7 @@ fVotes_view = async (id) => {
           onChange={(e) => this.setState({ VCheckAndClaimGoodToken: e.target.value })}
           placeholder="심사 후 클레임 (나의 보트 번호 넣는곳)"
         />
-        <button onClick={() => this.fBalanceOf(this.state.VCheckAndClaimGoodToken)}>클레임 받기</button>
+        <button onClick={() => this.fCheckAndClaimGoodToken(this.state.VCheckAndClaimGoodToken)}>클레임 받기</button>
 
 
         <br/>
@@ -787,7 +770,7 @@ fVotes_view = async (id) => {
           onChange={(e) => this.setState({ VExchangeEther: e.target.value })}
           placeholder="exchange ether"
         />
-        <button onClick={() => this.fBalanceOf(this.state.VExchangeEther)}>exchange ether</button>
+        {/*<button onClick={() => this.fBalanceOf(this.state.VExchangeEther)}>exchange ether</button>*/}
 
         <br/>
         <br/>
