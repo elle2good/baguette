@@ -1,59 +1,70 @@
-/* eslint-disable jsx-a11y/img-redundant-alt */
-//실행 주기
-/*
-애플리케이션이 처음 로드될 때:
-componentDidMount() 함수가 호출되어 MetaMask 연결을 설정합니다.
-여기서 connectToMetaMask() 함수를 호출하며, 계정 변경 이벤트 및 
-네트워크 변경 이벤트를 처리하기 위한 리스너를 설정합니다.
+/**
+ * Baguette
+ * @leader Elisabeth Kim, Sueun Cho
+ * @developer Sueun Cho, 경록, 은빈 (Change your name korea to english)
+ * @artist Add your name
+ * @advisor Add your name
+ * @date 2023-05-12
+ * @description Other developer add some functions and thne add author(Your name).
+ * @version 2.4.0
+ * @company baguette
+ */
 
-MetaMask에 연결 버튼 클릭 시:
-connectToMetaMask() 함수가 실행되어 사용자가 MetaMask에 연결을 요청하고, 
-Web3 인스턴스를 생성합니다. 그리고 연결된 계정을 가져오고, 해당 계정의 
-이더리움 잔액을 가져옵니다.
-*/
-
-// eslint-disable-next-line
+///////////////////
+// React and Web3//
+///////////////////
 import React, { Component } from "react";
 import { Routes, Route } from "react-router-dom";
 import Web3 from "web3";
-import ERC20 from "./abi/ERC20.json"; // ERC20 JSON import
+
+////////////////////////
+// Smart Contract ABI //
+////////////////////////
+import ERC20 from "./abi/ERC20.json";
 import ERC721 from "./abi/ERC721.json";
 import ERC1155 from "./abi/ERC1155.json";
 import Reward from "./abi/Reward.json";
 
-// 페이지 import
+/////////////////
+// Page import //
+/////////////////
+import VotePage from "./pages/VotePage";
+import FTMintPage from "./pages/FTMintPage";
 import LandingPage from "./pages/LandingPage";
+import NFTMintPage from "./pages/NFTMintPage";
 import ETHTransferPage from "./pages/ETHTransferPage";
 import TokenTransferPage from "./pages/TokenTransferPage";
-import NFTMintPage from "./pages/NFTMintPage";
-
-import "./App.css";
 import ControllerPage from "./pages/admin/ControllerPage";
-import NFTTeamMintPage from "./pages/admin/NFTTeamMintPage";
-import FTMintPage from "./pages/FTMintPage";
 import ExchangeTokenPage from "./pages/ExchangeTokenPage";
-import VotePage from "./pages/VotePage";
+import NFTTeamMintPage from "./pages/admin/NFTTeamMintPage";
 
+/////////
+// CSS //
+/////////
+import "./App.css";
+
+///////////////
+// App Class //
+///////////////
 class App extends Component {
   //state 객체의 속성 값이 변경되면 render() 메소드가 다시 호출되어 UI가 갱신
   state = {
-    web3: null,
-    currentAccounts: null,
-    //ZKEVM : 0x74fC142f8482c1a9E8092c0D7dfb3a3ddeE3943A
+    web3: null, //Info of Web3
+    currentAccounts: null,  //Current accounts
+    //Smart contract accounts
     ERC20contractAddress: "0xcC3B025701782316764296c4D23399A099D257b4",
     ERC721contractAddress: "0x2491527DD8eD8c7F40f09c56b814C1f6eDDD6875",
     ERC1155contractAddress: "0xdA4107E898782fDa3931069BFafa4a34d332a790",
     rewardContractAddress: "0x00f6aC1d75dE1587dF37E172650c840e46D4B86E",
-    ethereumBalance: "",
-    receiverAddress: "",
-    transferValue: "",
-    tokenAmount: "",
+    ethereumBalance: "",  //Ethereum balance
+    receiverAddress: "",  // Address to receive Ethereum
+    transferValue: "",  //Transfer amounts of Ethereum
     sendTo: "",
     sendAmount: "",
     toMintPrice: 0,
-    imageUrl: "",
-    VAddController: "",
-    VRemoveController: "",
+    imageUrl: "", //Image Url
+    VAddController: "", //Add controller
+    VRemoveController: "", //Remove controller
     VMintByETH_FT: "",
     VBalanceOf: "",
     VCheckAndClaimGoodToken: "",
@@ -63,6 +74,8 @@ class App extends Component {
     VVoteId: "",
     VVoteIs: "",
     VVotes_view: "",
+    voteData: [],
+    currentPage: 0, //Vote page
   };
 
   async componentDidMount() {
@@ -71,6 +84,12 @@ class App extends Component {
     this.setupNetworkChangedEventListener();
     this.fetchImageMetadata();
   }
+
+  //handlePageChange는 VotePage.js에서 투표 페이지를 보여줌
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+    console.log(page)
+  };
 
   setupAccountsChangedEventListener = () => {
     window.ethereum.on("accountsChanged", async () => {
@@ -105,25 +124,19 @@ class App extends Component {
 
   // 현재 MetaMask 연결된 계정 가져오기
   getBalance = async (web3) => {
-    const currentAccounts = await web3.eth.getBalance();
-    this.setState({ currentAccounts });
-    return currentAccounts;
+    const currentAccountsBalance = await web3.eth.getBalance();
+    this.setState({ currentAccountsBalance });
+    return currentAccountsBalance;
   };
 
   // 현재 연결된 계정의 이더리움 잔액 가져오기
   getEthBalance = async (web3) => {
-    if (this.state.currentAccounts && this.state.currentAccounts[0]) {
-      console.log(this.state.currentAccounts);
-      const balanceWei = await web3.eth.getBalance(
-        this.state.currentAccounts[0]
-      );
-      const balanceEth = web3.utils.fromWei(balanceWei, "ether");
-      this.setState({ ethereumBalance: balanceEth });
-      return balanceEth;
-    }
-    return null;
+    const accounts = await web3.eth.getAccounts();
+    const balanceWei = await web3.eth.getBalance(accounts[0]);
+    const balanceEther = web3.utils.fromWei(balanceWei, 'ether');
+    return balanceEther;
   };
-
+  
   //MetaMask 계정 변경 이벤트 핸들링
   handleAccountChanged = async () => {
     const web3 = await this.createWeb3Instance();
@@ -131,19 +144,15 @@ class App extends Component {
     // Reset the balance before fetching the new balance
     this.setState({ ethereumBalance: 0 });
     const balance = await this.getEthBalance(web3);
+    console.log(balance)
     this.setState({ currentAccounts: accounts, ethereumBalance: balance });
   };
 
   handleNetworkChanged = async () => {
-    const web3 = await this.createWeb3Instance();
-    const accounts = await this.getAccounts(web3);
-    // Reset the balance before fetching the new balance
-    this.setState({ ethereumBalance: 0 });
-    const balance = await this.getEthBalance(web3);
-    this.setState({ currentAccounts: accounts, ethereumBalance: balance });
+    await this.handleAccountChanged();
   };
 
-  // MetaMask 설치 여부 확인
+  //Check MetaMask install
   checkMetaMaskInstallation = async () => {
     if (typeof window.ethereum === "undefined") {
       alert(
@@ -154,7 +163,7 @@ class App extends Component {
     return true;
   };
 
-  // MetaMask 연결
+  //Connect MetaMask
   connectToMetaMask = async () => {
     if (await this.checkMetaMaskInstallation()) {
       try {
@@ -706,20 +715,45 @@ class App extends Component {
     }
   };
 
+
   fVotes_view = async (id) => {
     const web3 = this.state.web3;
     const contract = new web3.eth.Contract(
       Reward,
       this.state.rewardContractAddress
     );
-    //id는 받아오는걸로 수정해야함
-
-    //promise는 await로 가져오면 됌
-    // const data = await contract.methods.votes(id).call();
-    // console.log(data.proposer);
-    const data = contract.methods.votes(id).call();
-    console.log(data);
+    const data = await contract.methods.votes(id).call();
+    
+    // 필요한 정보만 선택
+    const filteredData = {
+      id: data.id,
+      proposer: data.proposer,
+      startTime: data.startTime,
+      endTime: data.endTime,
+      positiveVotes: data.positiveVotes,
+      negativeVotes: data.negativeVotes,
+      executed: data.executed,
+      rewardClaimed: data.rewardClaimed,
+    };
+  
+    console.log(filteredData);
+    return filteredData;
   };
+
+  fHasVoted = async (id) => {
+    const web3 = this.state.web3;
+    const contract = new web3.eth.Contract(
+      Reward,
+      this.state.rewardContractAddress
+    );
+    const from = this.state.currentAccounts[0];
+
+    const data = await contract.methods.hasVoted(from, id).call();
+    
+    console.log(data);
+    return data;
+  };
+  
 
   render() {
     return (
@@ -802,18 +836,14 @@ class App extends Component {
                 fStartVote={this.fStartVote}
                 fVote={this.fVote}
                 fVotes_view={this.fVotes_view}
+                voteData={this.state.voteData}
+                currentPage={this.state.currentPage}
+                onPageChange={this.handlePageChange} // Pass handlePageChange to VotePage
+                fHasVoted={this.fHasVoted}
               />
             }
           />
         </Routes>
-        {/*  <h2>토큰 구매</h2>
-        <input
-          type="text"
-          value={this.state.tokenAmount}
-          onChange={(e) => this.setState({ tokenAmount: e.target.value })}
-          placeholder="토큰 구매량"
-        />
-        <button onClick={() => this.buyTokens1(this.state.tokenAmount)}>토큰 구매</button> */}
       </div>
     );
   }
