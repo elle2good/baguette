@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Fox from "../images/MetaMask_Fox.png";
 
-const LandingPage = ({ state, connectToMetaMask }) => {
+const LandingPage = ({ state, connectToMetaMask, fetchImageMetadata }) => {
+  useEffect(() => {
+    if (state.currentAccounts && state.currentAccounts.length > 0) {
+      fetchImageMetadata();
+    }
+  }, [state.currentAccounts]);
+
   return (
     <div className="box-signin-btn">
       <h1>MetaMask 연결 및 토큰 전송</h1>
@@ -12,6 +18,12 @@ const LandingPage = ({ state, connectToMetaMask }) => {
         <img src={Fox} />
         Sign in MetaMask
       </button>
+      {state.imageUrl && (
+        <div>
+          <p>이미지:</p>
+          <img src={state.imageUrl} alt="NFT 이미지" />
+        </div>
+      )}
     </div>
   );
 };

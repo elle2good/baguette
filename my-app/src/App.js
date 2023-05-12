@@ -463,6 +463,7 @@ class App extends Component {
         .tokenOfOwner(this.state.currentAccounts[0])
         .call();
       const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/${tokenId}`;
+      //const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/1`;
       console.log(metadataUrl);
       try {
         //try catch 추가
@@ -730,6 +731,7 @@ class App extends Component {
               <LandingPage
                 state={this.state}
                 connectToMetaMask={this.connectToMetaMask}
+                fetchImageMetadata={this.fetchImageMetadata}
               />
             }
           />
