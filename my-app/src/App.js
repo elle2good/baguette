@@ -1,18 +1,18 @@
 /**
  * Baguette
  * @leader Elisabeth Kim, Sueun Cho
- * @developer Sueun Cho, 경록, 은빈 (Change your name korea to english)
+ * @developer Sueun Cho, 경록, 은빈 (Change your name korean to english)
  * @artist Add your name
  * @advisor Add your name
  * @date 2023-05-12
  * @description Other developer add some functions and thne add author(Your name).
- * @version 2.4.0
+ * @version 2.4.1
  * @company baguette
  */
 
-///////////////////
-// React and Web3//
-///////////////////
+////////////////////
+// React and Web3 //
+////////////////////
 import React, { Component } from "react";
 import { Routes, Route } from "react-router-dom";
 import Web3 from "web3";
@@ -119,6 +119,7 @@ class App extends Component {
   getAccounts = async (web3) => {
     const currentAccounts = await web3.eth.getAccounts();
     this.setState({ currentAccounts });
+
     return currentAccounts;
   };
 
@@ -126,6 +127,7 @@ class App extends Component {
   getBalance = async (web3) => {
     const currentAccountsBalance = await web3.eth.getBalance();
     this.setState({ currentAccountsBalance });
+
     return currentAccountsBalance;
   };
 
@@ -134,9 +136,10 @@ class App extends Component {
     const accounts = await web3.eth.getAccounts();
     const balanceWei = await web3.eth.getBalance(accounts[0]);
     const balanceEther = web3.utils.fromWei(balanceWei, 'ether');
+
     return balanceEther;
   };
-  
+
   //MetaMask 계정 변경 이벤트 핸들링
   handleAccountChanged = async () => {
     const web3 = await this.createWeb3Instance();
@@ -194,9 +197,6 @@ class App extends Component {
             },
           ],
         })
-        .then(() => {
-          alert("Woot!");
-        })
         .catch((e) => {
           alert("Oops!");
         });
@@ -204,28 +204,6 @@ class App extends Component {
       console.error("Error:", error);
     }
   };
-
-  // ERC20 토큰 구매
-  //buyTokens1 = async (amount) => {
-  //  const web3 = this.state.web3;
-  //  const getInfo = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
-  //  const from = this.state.currentAccounts[0];
-  //  const amount1 = web3.utils.toWei(String(amount), "ether");
-  //
-  //  // 토큰 구입 함수 호출을 위한 트랜잭션 객체 생성
-  //  const transaction = {
-  //    to: this.state.ERC20contractAddress,
-  //    from: from,
-  //    value: amount1,
-  //    data: getInfo.methods.buyTokens().encodeABI()
-  //  };
-  //  // 트랜잭션 전송
-  //await web3.eth.sendTransaction(transaction);
-  //
-  //// 토큰 구입 완료 이벤트 출력
-  //console.log(`Bought ${amount} tokens.`);
-  //
-  //};
 
   checkNFTOwner = async () => {
     if (
@@ -246,6 +224,10 @@ class App extends Component {
       .call();
     return tokenBalance;
   };
+
+  ///////////////
+  //   Token   //
+  ///////////////
 
   transferToken = async (to, value) => {
     const web3 = this.state.web3;
@@ -281,10 +263,7 @@ class App extends Component {
 
   fAddController = async (to) => {
     const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
-      ERC20,
-      this.state.ERC20contractAddress
-    );
+    const tokenContract = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
 
     try {
       const data = tokenContract.methods.addController(to).encodeABI(); // 'to' 인자를 함수에 전달
@@ -343,6 +322,38 @@ class App extends Component {
     }
   };
 
+  fTokenBalanceOf = async () => {
+    const web3 = this.state.web3;
+    const tokenContract = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
+    const tokenBalanceOf = await tokenContract.methods.balanceOf(this.state.currentAccounts[0]).call();
+    return tokenBalanceOf;
+  };
+
+  addTokenToMetaMask = async () => {
+    const tokenAddress = this.state.ERC20contractAddress;
+    const tokenSymbol = "CRB"; // 토큰 심볼을 적어주세요.
+    const tokenDecimals = 18; // 토큰의 소수점 자릿수를 적어주세요.
+    const tokenImage = "https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/Qmbkf8wJzuMUQEFWGDq6sYb6qjcejQTC9CNf7jj8v98pME/1.png"; // 토큰 이미지 URL을 적어주세요.
+  
+    try {
+      // MetaMask에 토큰을 추가하는 메서드를 사용합니다.
+      await window.ethereum.request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: {
+            address: tokenAddress,
+            symbol: tokenSymbol,
+            decimals: tokenDecimals,
+            image: tokenImage,
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Error adding token to MetaMask:", error);
+    }
+  };
+
   /////////////
   //   NFT   //
   /////////////
@@ -355,7 +366,7 @@ class App extends Component {
     );
 
     try {
-      const data = tokenContract.methods.setSale().encodeABI(); // 'to' 인자를 함수에 전달
+      const data = tokenContract.methods.setSale().encodeABI();
 
       window.ethereum
         .request({
@@ -363,7 +374,7 @@ class App extends Component {
           params: [
             {
               from: this.state.currentAccounts[0],
-              to: this.state.ERC721contractAddress, // Use the contract address instead of 'get_token'
+              to: this.state.ERC721contractAddress,
               data,
             },
           ],
@@ -766,6 +777,8 @@ class App extends Component {
                 state={this.state}
                 connectToMetaMask={this.connectToMetaMask}
                 fetchImageMetadata={this.fetchImageMetadata}
+                fTokenBalanceOf={this.fTokenBalanceOf}
+                addTokenToMetaMask={this.addTokenToMetaMask}
               />
             }
           />
@@ -827,7 +840,7 @@ class App extends Component {
                 fExchangeTokens={this.fExchangeTokens}
               />
             }
-          />
+          />f
           <Route
             path="/vote"
             element={
