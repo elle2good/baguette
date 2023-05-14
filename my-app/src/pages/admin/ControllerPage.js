@@ -1,20 +1,28 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const ControllerPage = ({
   state,
+  connectToMetaMask,
   fAddController,
   fRemoveController,
   fSetSale,
 }) => {
+  const [addController, setAddController] = useState("");
+  const [removeController, setRemoveController] = useState("");
+
+  useEffect(() => {
+    connectToMetaMask();
+  }, [connectToMetaMask]);
+
   return (
     <div>
       <input
         type="text"
-        value={state.VAddController}
-        onChange={(e) => this.setState({ VAddController: e.target.value })}
+        value={addController}
+        onChange={(e) => setAddController(e.target.value)}
         placeholder="이건 add 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께"
       />
-      <button onClick={() => fAddController(state.VAddController)}>
+      <button onClick={() => fAddController(addController)}>
         이건 add 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께
       </button>
 
@@ -24,11 +32,11 @@ const ControllerPage = ({
 
       <input
         type="text"
-        value={state.VRemoveController}
-        onChange={(e) => this.setState({ VRemoveController: e.target.value })}
+        value={removeController}
+        onChange={(e) => setRemoveController(e.target.value)}
         placeholder="이건 remove 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에 들어갈께"
       />
-      <button onClick={() => fRemoveController(state.VRemoveController)}>
+      <button onClick={() => fRemoveController(removeController)}>
         이건 remove 컨트롤러입니다. 오너만 사용 가능합니다. 오너페이지에
         들어갈께
       </button>

@@ -79,7 +79,7 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    await this.connectToMetaMask();
+    //await this.connectToMetaMask();
     this.setupAccountsChangedEventListener();
     this.setupNetworkChangedEventListener();
     this.fetchImageMetadata();
@@ -124,21 +124,16 @@ class App extends Component {
   };
 
   // 현재 MetaMask 연결된 계정 가져오기
-  getBalance = async (web3) => {
-    const currentAccountsBalance = await web3.eth.getBalance();
-    this.setState({ currentAccountsBalance });
-
-    return currentAccountsBalance;
-  };
-
-  // 현재 연결된 계정의 이더리움 잔액 가져오기
   getEthBalance = async (web3) => {
     const accounts = await web3.eth.getAccounts();
     const balanceWei = await web3.eth.getBalance(accounts[0]);
     const balanceEther = web3.utils.fromWei(balanceWei, 'ether');
-
+  
+    this.setState({ currentAccountsBalance: balanceEther });
+  
     return balanceEther;
   };
+  
 
   //MetaMask 계정 변경 이벤트 핸들링
   handleAccountChanged = async () => {
@@ -325,16 +320,20 @@ class App extends Component {
   fTokenBalanceOf = async () => {
     const web3 = this.state.web3;
     const tokenContract = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
-    const tokenBalanceOf = await tokenContract.methods.balanceOf(this.state.currentAccounts[0]).call();
-    return tokenBalanceOf;
+    const tokenBalanceOfWei = await tokenContract.methods.balanceOf(this.state.currentAccounts[0]).call();
+    const tokenBalanceOfEther = web3.utils.fromWei(tokenBalanceOfWei, 'ether');
+    const tokenBalanceOfTruncated = Math.floor(parseFloat(tokenBalanceOfEther) * 10000) / 10000;
+    return tokenBalanceOfTruncated;
   };
+  
+  
 
   addTokenToMetaMask = async () => {
     const tokenAddress = this.state.ERC20contractAddress;
     const tokenSymbol = "CRB"; // 토큰 심볼을 적어주세요.
     const tokenDecimals = 18; // 토큰의 소수점 자릿수를 적어주세요.
     const tokenImage = "https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/Qmbkf8wJzuMUQEFWGDq6sYb6qjcejQTC9CNf7jj8v98pME/1.png"; // 토큰 이미지 URL을 적어주세요.
-  
+
     try {
       // MetaMask에 토큰을 추가하는 메서드를 사용합니다.
       await window.ethereum.request({
@@ -495,6 +494,19 @@ class App extends Component {
         console.error("Error fetching metadata:", error);
       }
     }
+  };
+
+  fNickname = async (id) => {
+    const web3 = this.state.web3;
+    const tokenContract = new web3.eth.Contract(
+      ERC721,
+      this.state.ERC721contractAddress
+    );
+    const myNickname = await tokenContract.methods
+      .getNickname(this.state.currentAccounts[0])
+      .call();
+
+    return myNickname
   };
 
   /////////////////
@@ -779,6 +791,7 @@ class App extends Component {
                 fetchImageMetadata={this.fetchImageMetadata}
                 fTokenBalanceOf={this.fTokenBalanceOf}
                 addTokenToMetaMask={this.addTokenToMetaMask}
+                /*fNickname = {this.fNickname}*/
               />
             }
           />
@@ -787,6 +800,7 @@ class App extends Component {
             element={
               <ETHTransferPage
                 state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
                 transferETH={this.transferETH}
               />
             }
@@ -796,6 +810,7 @@ class App extends Component {
             element={
               <TokenTransferPage
                 state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
                 transferToken={this.transferToken}
               />
             }
@@ -803,29 +818,41 @@ class App extends Component {
           <Route
             path="/nft_mint"
             element={
-              <NFTMintPage state={this.state} fMintByETH={this.fMintByETH} />
+              <NFTMintPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fMintByETH={this.fMintByETH}
+              />
             }
           />
           <Route
             path="/admin/controller"
             element={
               <ControllerPage
-                state={this.state}
-                fAddController={this.fAddController}
-                fRemoveController={this.fRemoveController}
-                fSetSale={this.fSetSale}
-              />
+              state={this.state}
+              connectToMetaMask={this.connectToMetaMask}
+              fAddController={this.fAddController}
+              fRemoveController={this.fRemoveController}
+              fSetSale={this.fSetSale}
+            />
             }
           />
           <Route
             path="/admin/team_mint"
-            element={<NFTTeamMintPage fTeamMint={this.fTeamMint} />}
+            element={
+              <NFTTeamMintPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fTeamMint={this.fTeamMint}
+              />
+            }
           />
           <Route
             path="/ft_mint"
             element={
               <FTMintPage
                 state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
                 fMintByETH_FT={this.fMintByETH_FT}
                 fBalanceOf={this.fBalanceOf}
                 fCheckAndClaimGoodToken={this.fCheckAndClaimGoodToken}
@@ -837,6 +864,7 @@ class App extends Component {
             element={
               <ExchangeTokenPage
                 state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
                 fExchangeTokens={this.fExchangeTokens}
               />
             }
@@ -846,6 +874,7 @@ class App extends Component {
             element={
               <VotePage
                 state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
                 fStartVote={this.fStartVote}
                 fVote={this.fVote}
                 fVotes_view={this.fVotes_view}

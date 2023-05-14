@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-const NFTMintPage = ({ state, fMintByETH }) => {
+const NFTMintPage = ({ state, connectToMetaMask, fMintByETH }) => {
+
+  useEffect(() => {
+    connectToMetaMask();
+  }, [connectToMetaMask]);
+
   return (
     <div>
       <p>내 주소: {state.currentAccounts}</p>
