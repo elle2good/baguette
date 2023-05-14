@@ -43,6 +43,7 @@ import NFTTeamMintPage from "./pages/admin/NFTTeamMintPage";
 // CSS //
 /////////
 import "./App.css";
+import Nav from "./components/Nav";
 
 ///////////////
 // App Class //
@@ -51,15 +52,15 @@ class App extends Component {
   //state 객체의 속성 값이 변경되면 render() 메소드가 다시 호출되어 UI가 갱신
   state = {
     web3: null, //Info of Web3
-    currentAccounts: null,  //Current accounts
+    currentAccounts: null, //Current accounts
     //Smart contract accounts
     ERC20contractAddress: "0x1B8a1215ae41D37d01CcC7E36aB64EA43E9F12B8",
     ERC721contractAddress: "0xA2540ea136f6F91D553bA744Cff9E1585681CC16",
     ERC1155contractAddress: "0x675fC7622953961E45F4Ff17d82680A0Aad6C6A9",
     rewardContractAddress: "0xc3329E0B0099A6C29957e5bE5C39FfD199C7aE1C",
-    ethereumBalance: "",  //Ethereum balance
-    receiverAddress: "",  // Address to receive Ethereum
-    transferValue: "",  //Transfer amounts of Ethereum
+    ethereumBalance: "", //Ethereum balance
+    receiverAddress: "", // Address to receive Ethereum
+    transferValue: "", //Transfer amounts of Ethereum
     sendTo: "",
     sendAmount: "",
     toMintPrice: 0,
@@ -89,7 +90,7 @@ class App extends Component {
   //handlePageChange는 VotePage.js에서 투표 페이지를 보여줌
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
-    console.log(page)
+    console.log(page);
   };
 
   setupAccountsChangedEventListener = () => {
@@ -128,13 +129,12 @@ class App extends Component {
   getEthBalance = async (web3) => {
     const accounts = await web3.eth.getAccounts();
     const balanceWei = await web3.eth.getBalance(accounts[0]);
-    const balanceEther = web3.utils.fromWei(balanceWei, 'ether');
-  
+    const balanceEther = web3.utils.fromWei(balanceWei, "ether");
+
     this.setState({ currentAccountsBalance: balanceEther });
-  
+
     return balanceEther;
   };
-  
 
   //MetaMask 계정 변경 이벤트 핸들링
   handleAccountChanged = async () => {
@@ -143,7 +143,7 @@ class App extends Component {
     // Reset the balance before fetching the new balance
     this.setState({ ethereumBalance: 0 });
     const balance = await this.getEthBalance(web3);
-    console.log(balance)
+    console.log(balance);
     this.setState({ currentAccounts: accounts, ethereumBalance: balance });
   };
 
@@ -259,7 +259,10 @@ class App extends Component {
 
   fAddController = async (to) => {
     const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
+    const tokenContract = new web3.eth.Contract(
+      ERC20,
+      this.state.ERC20contractAddress
+    );
 
     try {
       const data = tokenContract.methods.addController(to).encodeABI(); // 'to' 인자를 함수에 전달
@@ -320,20 +323,25 @@ class App extends Component {
 
   fTokenBalanceOf = async () => {
     const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(ERC20, this.state.ERC20contractAddress);
-    const tokenBalanceOfWei = await tokenContract.methods.balanceOf(this.state.currentAccounts[0]).call();
-    const tokenBalanceOfEther = web3.utils.fromWei(tokenBalanceOfWei, 'ether');
-    const tokenBalanceOfTruncated = Math.floor(parseFloat(tokenBalanceOfEther) * 10000) / 10000;
+    const tokenContract = new web3.eth.Contract(
+      ERC20,
+      this.state.ERC20contractAddress
+    );
+    const tokenBalanceOfWei = await tokenContract.methods
+      .balanceOf(this.state.currentAccounts[0])
+      .call();
+    const tokenBalanceOfEther = web3.utils.fromWei(tokenBalanceOfWei, "ether");
+    const tokenBalanceOfTruncated =
+      Math.floor(parseFloat(tokenBalanceOfEther) * 10000) / 10000;
     return tokenBalanceOfTruncated;
   };
-  
-  
 
   addTokenToMetaMask = async () => {
     const tokenAddress = this.state.ERC20contractAddress;
     const tokenSymbol = "CRB"; // 토큰 심볼을 적어주세요.
     const tokenDecimals = 18; // 토큰의 소수점 자릿수를 적어주세요.
-    const tokenImage = "https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/Qmbkf8wJzuMUQEFWGDq6sYb6qjcejQTC9CNf7jj8v98pME/1.png"; // 토큰 이미지 URL을 적어주세요.
+    const tokenImage =
+      "https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/Qmbkf8wJzuMUQEFWGDq6sYb6qjcejQTC9CNf7jj8v98pME/1.png"; // 토큰 이미지 URL을 적어주세요.
 
     try {
       // MetaMask에 토큰을 추가하는 메서드를 사용합니다.
@@ -507,7 +515,7 @@ class App extends Component {
       .getNickname(this.state.currentAccounts[0])
       .call();
 
-    return myNickname
+    return myNickname;
   };
 
   fTokenApprove = async (getCrumb) => {
@@ -707,9 +715,6 @@ class App extends Component {
     }
   };
 
-
-  
-
   fStartVote = async () => {
     const web3 = this.state.web3;
     const contract = new web3.eth.Contract(
@@ -779,7 +784,6 @@ class App extends Component {
     }
   };
 
-
   fVotes_view = async (id) => {
     const web3 = this.state.web3;
     const contract = new web3.eth.Contract(
@@ -787,7 +791,7 @@ class App extends Component {
       this.state.rewardContractAddress
     );
     const data = await contract.methods.votes(id).call();
-    
+
     // 필요한 정보만 선택
     const filteredData = {
       id: data.id,
@@ -799,7 +803,7 @@ class App extends Component {
       executed: data.executed,
       rewardClaimed: data.rewardClaimed,
     };
-  
+
     console.log(filteredData);
     return filteredData;
   };
@@ -813,15 +817,15 @@ class App extends Component {
     const from = this.state.currentAccounts[0];
 
     const data = await contract.methods.hasVoted(from, id).call();
-    
+
     console.log(data);
     return data;
   };
 
-
   render() {
     return (
       <div>
+        <Nav />
         <Routes>
           <Route
             path="/"
@@ -867,28 +871,6 @@ class App extends Component {
             }
           />
           <Route
-            path="/admin/controller"
-            element={
-              <ControllerPage
-              state={this.state}
-              connectToMetaMask={this.connectToMetaMask}
-              fAddController={this.fAddController}
-              fRemoveController={this.fRemoveController}
-              fSetSale={this.fSetSale}
-            />
-            }
-          />
-          <Route
-            path="/admin/team_mint"
-            element={
-              <NFTTeamMintPage
-                state={this.state}
-                connectToMetaMask={this.connectToMetaMask}
-                fTeamMint={this.fTeamMint}
-              />
-            }
-          />
-          <Route
             path="/ft_mint"
             element={
               <FTMintPage
@@ -910,7 +892,6 @@ class App extends Component {
               />
             }
           />
-
           <Route
             path="/vote"
             element={
@@ -925,6 +906,28 @@ class App extends Component {
                 onPageChange={this.handlePageChange} // Pass handlePageChange to VotePage
                 fHasVoted={this.fHasVoted}
                 fSetApprovalForAll={this.fSetApprovalForAll}
+              />
+            }
+          />
+          <Route
+            path="/admin/controller"
+            element={
+              <ControllerPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fAddController={this.fAddController}
+                fRemoveController={this.fRemoveController}
+                fSetSale={this.fSetSale}
+              />
+            }
+          />
+          <Route
+            path="/admin/team_mint"
+            element={
+              <NFTTeamMintPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fTeamMint={this.fTeamMint}
               />
             }
           />
