@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const ETHTransferPage = ({ transferETH }) => {
-  const [currentAccounts, setCurrentAccounts] = useState("");
+const ETHTransferPage = ({ state, connectToMetaMask, transferETH }) => {
   const [receiverAddress, setReceiverAddress] = useState("");
   const [transferValue, setTransferValue] = useState("");
 
+  useEffect(() => {
+    connectToMetaMask();
+  }, [connectToMetaMask]);
+  
   return (
     <div>
-      <p>내 주소: {currentAccounts}</p>
+      <p>내 주소: {state.currentAccounts}</p> {/* 내 주소 표시 */}
       <h2>이더 전송</h2>
       <input
         type="text"

@@ -1,45 +1,61 @@
 import React, { useState, useEffect } from "react";
 
-const VotePage = ({   state,
+const VotePage = ({
+  state,
   fStartVote,
   fVote,
   fVotes_view,
   currentPage,
   onPageChange,
-  fHasVoted }) => {
+  fHasVoted,
+  connectToMetaMask,
+  fSetApprovalForAll,
+}) => {
   const [VVoteId, setVVoteId] = useState("");
   const [VVoteIs, setVVoteIs] = useState("");
   const [VVotes_view, setVVotes_view] = useState("");
 
-const [displayedVoteData, setDisplayedVoteData] = useState([]);
-const [voteStatus, setVoteStatus] = useState([]);
+  const [displayedVoteData, setDisplayedVoteData] = useState([]);
+  const [voteStatus, setVoteStatus] = useState([]);
 
+  useEffect(() => {
+    connectToMetaMask();
+  }, [connectToMetaMask]);
 
-useEffect(() => {
-  const startIndex = currentPage * 5;
-  const endIndex = startIndex + 4;
-  const newDisplayedVoteData = [];
-  const newVoteStatus = [];
+  useEffect(() => {
+    if (!state || !state.web3 || !state.currentAccounts) {
+      return;
+    }
   
-  for (let i = startIndex; i <= endIndex; i++) {
-    fVotes_view(i).then((data) => {
-      newDisplayedVoteData.push(data);
-      if (newDisplayedVoteData.length === 5) {
-        setDisplayedVoteData(newDisplayedVoteData);
+    const startIndex = currentPage * 5;
+    const endIndex = startIndex + 4;
+    const newDisplayedVoteData = [];
+    const newVoteStatus = [];
+  
+    const fetchData = async () => {
+      for (let i = startIndex; i <= endIndex; i++) {
+        const data = await fVotes_view(i);
+        newDisplayedVoteData.push(data);
+        if (newDisplayedVoteData.length === 5) {
+          setDisplayedVoteData(newDisplayedVoteData);
+        }
+  
+        const hasVoted = await fHasVoted(i);
+        newVoteStatus.push(hasVoted);
+        if (newVoteStatus.length === 5) {
+          setVoteStatus(newVoteStatus);
+        }
       }
-    });
-
-    fHasVoted(i).then((hasVoted) => {
-      newVoteStatus.push(hasVoted);
-      if (newVoteStatus.length === 5) {
-        setVoteStatus(newVoteStatus);
-      }
-    });
-  }
-}, [currentPage]);
-
-
-
+    };
+  
+    const timer = setTimeout(() => {
+      fetchData();
+    }, 1000);
+  
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [currentPage, state]);
 
   const handleButtonClick = (page) => {
     if (page < 0) return; // Don't go below page 0
@@ -59,6 +75,7 @@ useEffect(() => {
 
       <br />
       <br />
+      <button onClick={() => fSetApprovalForAll()}>컨트롤러 승인</button>
       <br />
 
       <input
