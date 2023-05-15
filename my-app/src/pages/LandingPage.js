@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-import Fox from "../images/MetaMask_Fox.png";
+import Fox from "../images/lg_metamask.png";
 
-const LandingPage = ({ state, connectToMetaMask, fetchImageMetadata, fTokenBalanceOf, addTokenToMetaMask, fNickname }) => {
+const LandingPage = ({
+  state,
+  connectToMetaMask,
+  fetchImageMetadata,
+  fTokenBalanceOf,
+  addTokenToMetaMask,
+  fNickname,
+}) => {
   const [tokenBalance, setTokenBalance] = useState("");
   //const [nickname, setNickname] = useState("");
 
@@ -14,18 +21,19 @@ const LandingPage = ({ state, connectToMetaMask, fetchImageMetadata, fTokenBalan
     }
   }, [state.currentAccounts]);
 
-
   return (
     <div className="box-signin-btn">
-      <h1>MetaMask 연결 및 토큰 전송</h1>
       <p>내 주소: {state.currentAccounts}</p>
-      <p>잔액: {parseFloat(state.ethereumBalance).toFixed(4)} ETH</p>
-      <p>토큰 잔액 ≈ {tokenBalance} CRB</p>
-      {/*<p>닉네임: {nickname}</p> {/* 닉네임 표시 */}
+      <div className="box-about-team">
+        This is the space to go into Mission, About, How it Works, Team.
+      </div>
       <button onClick={connectToMetaMask}>
         <img src={Fox} />
         Sign in MetaMask
       </button>
+      <p>잔액: {parseFloat(state.ethereumBalance).toFixed(4)} ETH</p>
+      <p>토큰 잔액 ≈ {tokenBalance} CRB</p>
+      {/*<p>닉네임: {nickname}</p> {/* 닉네임 표시 */}
       <button onClick={addTokenToMetaMask}>토큰 추가</button>
       {state.imageUrl && (
         <div>
