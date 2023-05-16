@@ -5,7 +5,7 @@
  * @artist Lily
  * @date 2023-05-12
  * @description Baguette Eco Company
- * @version 2.6.0F
+ * @version 2.7.0
  * @company baguette
  */
 
