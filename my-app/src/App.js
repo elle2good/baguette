@@ -85,7 +85,6 @@ class App extends Component {
     const web3 = this.getWeb3();
     return new web3.eth.Contract(ABI, contractAddress);
   };
-  
 
   async componentDidMount() {
     //await this.connectToMetaMask();
