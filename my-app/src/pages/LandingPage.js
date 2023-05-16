@@ -11,15 +11,26 @@ const LandingPage = ({
   fNickname,
 }) => {
   const [tokenBalance, setTokenBalance] = useState("");
-  //const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState("");
 
   useEffect(() => {
     if (state.currentAccounts && state.currentAccounts.length > 0) {
       fetchImageMetadata();
       fTokenBalanceOf().then((balance) => setTokenBalance(balance));
-      //fNickname.then((nickname) => setNickname(nickname));
+  
+      const fetchNickname = async () => {
+        const nickname = await fNickname();
+        setNickname(nickname);
+      };
+  
+      fetchNickname();
     }
   }, [state.currentAccounts]);
+
+  const handleNicknameClick = () => {
+    alert(`Hello, ${nickname}!`);
+  };
+  
 
   return (
     <div className="box-signin-btn">
@@ -33,7 +44,7 @@ const LandingPage = ({
       </button>
       <p>잔액: {parseFloat(state.ethereumBalance).toFixed(4)} ETH</p>
       <p>토큰 잔액 ≈ {tokenBalance} CRB</p>
-      {/*<p>닉네임: {nickname}</p> {/* 닉네임 표시 */}
+      <p onClick={handleNicknameClick}>닉네임: {nickname}</p>
       <button onClick={addTokenToMetaMask}>토큰 추가</button>
       {state.imageUrl && (
         <div>

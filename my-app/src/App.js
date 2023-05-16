@@ -1,12 +1,11 @@
 /**
  * Baguette
  * @leader Elisabeth Kim, Sueun Cho
- * @developer Sueun Cho, 경록, 은빈 (Change your name korean to english)
- * @artist Add your name
- * @advisor Add your name
+ * @developer Sueun Cho, Rok, 은빈
+ * @artist Lily
  * @date 2023-05-12
- * @description Other developer add some functions and thne add author(Your name).
- * @version 3.1.0
+ * @description Baguette Eco Company
+ * @version 2.6.0F
  * @company baguette
  */
 
@@ -14,7 +13,6 @@
 // React and Web3 //
 ////////////////////
 import React, { Component } from "react";
-
 import { Routes, Route } from "react-router-dom";
 import Web3 from "web3";
 
@@ -49,7 +47,6 @@ import Nav from "./components/Nav";
 // App Class //
 ///////////////
 class App extends Component {
-  //state 객체의 속성 값이 변경되면 render() 메소드가 다시 호출되어 UI가 갱신
   state = {
     web3: null, //Info of Web3
     currentAccounts: null, //Current accounts
@@ -80,13 +77,23 @@ class App extends Component {
     currentPage: 0, //Vote page
   };
 
+  getWeb3 = () => {
+    return this.state.web3;
+  };
+  
+  getTokenContract = (ABI, contractAddress) => {
+    const web3 = this.getWeb3();
+    return new web3.eth.Contract(ABI, contractAddress);
+  };
+  
+
   async componentDidMount() {
     //await this.connectToMetaMask();
     this.setupAccountsChangedEventListener();
     this.setupNetworkChangedEventListener();
     this.fetchImageMetadata();
   }
-
+  
   //handlePageChange는 VotePage.js에서 투표 페이지를 보여줌
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
@@ -140,10 +147,10 @@ class App extends Component {
   handleAccountChanged = async () => {
     const web3 = await this.createWeb3Instance();
     const accounts = await this.getAccounts(web3);
-    // Reset the balance before fetching the new balance
+
     this.setState({ ethereumBalance: 0 });
     const balance = await this.getEthBalance(web3);
-    console.log(balance);
+
     this.setState({ currentAccounts: accounts, ethereumBalance: balance });
   };
 
@@ -167,35 +174,42 @@ class App extends Component {
     if (await this.checkMetaMaskInstallation()) {
       try {
         this.setState({ currentAccounts: null });
+
         await this.requestAccounts();
         await this.createWeb3Instance();
         await this.handleAccountChanged();
+
       } catch (error) {
         console.error("Error:", error);
       }
     }
   };
 
-  // 이더리움 전송
-  transferETH = async (from, value) => {
-    const myAddress = this.state.currentAccounts[0];
-
+  sendTransaction = async (from, to, data, value) => {
+    const web3 = this.getWeb3();
     try {
-      const web3 = await this.createWeb3Instance();
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: myAddress,
-              to: from,
-              value: web3.utils.toHex(web3.utils.toWei(value)),
-            },
-          ],
-        })
-        .catch((e) => {
-          alert("Oops!");
-        });
+      await window.ethereum.request({
+        method: "eth_sendTransaction",
+        params: [
+          {
+            from,
+            to,
+            data,
+            value: value ? web3.utils.toHex(web3.utils.toWei(value)) : undefined,
+          },
+          console.log(value)
+        ],
+      });
+      console.log(value)
+      alert("Transaction successful!");
+    } catch (e) {
+      alert("Oops! Transaction failed!");
+    }
+  };
+
+  transferETH = async (to, value) => {    
+    try {
+      await this.sendTransaction(this.state.currentAccounts[0], to, undefined, value);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -210,14 +224,8 @@ class App extends Component {
       return;
     }
 
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
-      ERC721,
-      this.state.ERC721contractAddress
-    );
-    const tokenBalance = await tokenContract.methods
-      .balanceOf(this.state.currentAccounts[0])
-      .call();
+    const tokenContract = this.getTokenContract(ERC721,this.state.ERC721contractAddress);
+    const tokenBalance = await tokenContract.methods.balanceOf(this.state.currentAccounts[0]).call();
     return tokenBalance;
   };
 
@@ -226,104 +234,51 @@ class App extends Component {
   ///////////////
 
   transferToken = async (to, value) => {
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
+    const tokenContract = this.getTokenContract(
       ERC20,
       this.state.ERC20contractAddress
     );
-
     try {
       const data = tokenContract.methods.transfer(to, value).encodeABI();
+      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC20contractAddress, data, undefined);
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: this.state.currentAccounts[0],
-              to: this.state.ERC20contractAddress, // Use the contract address instead of 'get_token'
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          alert("Woot! Token transfer successful!");
-        })
-        .catch((e) => {
-          alert("Oops! Token transfer failed!");
-        });
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   fAddController = async (to) => {
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
+    const tokenContract = this.getTokenContract(
       ERC20,
       this.state.ERC20contractAddress
     );
-
     try {
       const data = tokenContract.methods.addController(to).encodeABI(); // 'to' 인자를 함수에 전달
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: this.state.currentAccounts[0],
-              to: this.state.ERC20contractAddress, // Use the contract address instead of 'get_token'
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          alert("Woot! Controller added successfully!");
-        })
-        .catch((e) => {
-          alert("Oops! Adding controller failed!");
-        });
+      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC20contractAddress, data, undefined);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   fRemoveController = async (to) => {
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
+    const tokenContract = this.getTokenContract(
       ERC20,
       this.state.ERC20contractAddress
     );
-
     try {
       const data = tokenContract.methods.removeController(to).encodeABI(); // 'to' 인자를 함수에 전달
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: this.state.currentAccounts[0],
-              to: this.state.ERC20contractAddress, // Use the contract address instead of 'get_token'
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          alert("Woot! Controller added successfully!");
-        })
-        .catch((e) => {
-          alert("Oops! Adding controller failed!");
-        });
+      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC20contractAddress, data, undefined);
+
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   fTokenBalanceOf = async () => {
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
+    const web3 = this.getWeb3();
+    const tokenContract = this.getTokenContract(
       ERC20,
       this.state.ERC20contractAddress
     );
@@ -333,6 +288,7 @@ class App extends Component {
     const tokenBalanceOfEther = web3.utils.fromWei(tokenBalanceOfWei, "ether");
     const tokenBalanceOfTruncated =
       Math.floor(parseFloat(tokenBalanceOfEther) * 10000) / 10000;
+      console.log(tokenBalanceOfEther)
     return tokenBalanceOfTruncated;
   };
 
@@ -367,104 +323,46 @@ class App extends Component {
   /////////////
 
   fSetSale = async () => {
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
+    const tokenContract = this.getTokenContract(
       ERC721,
       this.state.ERC721contractAddress
     );
-
     try {
       const data = tokenContract.methods.setSale().encodeABI();
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: this.state.currentAccounts[0],
-              to: this.state.ERC721contractAddress,
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          alert("Woot! Controller added successfully!");
-        })
-        .catch((e) => {
-          alert("Oops! Adding controller failed!");
-        });
+      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC721contractAddress, data, undefined);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   fMintByETH = async () => {
-    const web3 = this.state.web3;
-    const contract = new web3.eth.Contract(
+    const web3 = this.getWeb3();
+    const contract = this.getTokenContract(
       ERC721,
       this.state.ERC721contractAddress
     );
-    const from = this.state.currentAccounts[0];
-    const price = 0;
-    const valueToSend = web3.utils.toWei(String(price), "ether");
-
+    const price = web3.utils.toWei("0", "wei");;
     try {
       const data = contract.methods.mintByETH(1, "FE").encodeABI();
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: from,
-              to: this.state.ERC721contractAddress,
-              value: valueToSend,
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          console.log(`Successfully minted 1 NFT.`);
-        })
-        .catch((e) => {
-          console.error("Error minting tokens:", e);
-        });
+      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC721contractAddress, data, price);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   fTeamMint = async () => {
-    const web3 = this.state.web3;
-    const contract = new web3.eth.Contract(
+    const web3 = this.getWeb3();
+    const contract = this.getTokenContract(
       ERC721,
       this.state.ERC721contractAddress
     );
-    const from = this.state.currentAccounts[0];
-    const price = 0;
-    const valueToSend = web3.utils.toWei(String(price), "ether");
-
+    const price = web3.utils.toWei("0", "wei");
     try {
       const data = contract.methods.teamMint(1).encodeABI();
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: from,
-              to: this.state.ERC721contractAddress,
-              value: valueToSend,
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          console.log(`Successfully minted 1 NFT.`);
-        })
-        .catch((e) => {
-          console.error("Error minting tokens:", e);
-        });
+      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC721contractAddress, data, price);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -475,42 +373,40 @@ class App extends Component {
       !this.state.currentAccounts ||
       this.state.currentAccounts.length === 0
     ) {
-      console.error("currentAccounts is not initialized");
       return;
     }
 
     const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
-      ERC721,
-      this.state.ERC721contractAddress
-    );
-    const tokenBalance = await this.checkNFTOwner();
-
-    if (tokenBalance >= 1) {
-      const tokenId = await tokenContract.methods
-        .tokenOfOwner(this.state.currentAccounts[0])
-        .call();
-      const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/${tokenId}`;
-      //const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/1`;
-      console.log(metadataUrl);
-      try {
-        //try catch 추가
-        const response = await fetch(metadataUrl);
-        const metadata = await response.json();
-        const imageUrl = metadata.image;
-        this.setState({ imageUrl });
-      } catch (error) {
-        console.error("Error fetching metadata:", error);
+    const tokenContract = new web3.eth.Contract(ERC721, this.state.ERC721contractAddress);
+  
+    // 총 토큰 수를 조회합니다.
+    const totalSupply = await tokenContract.methods.totalSupply().call();
+  
+    // 총 토큰 수만큼 반복하여, 각 토큰의 소유자를 확인합니다.
+    for (let tokenId = 0; tokenId < totalSupply; tokenId++) {
+      const owner = await tokenContract.methods.ownerOf(tokenId).call();
+  
+      // 만약 토큰의 소유자가 사용자와 일치한다면, 해당 토큰 ID를 처리합니다.
+      if (owner === this.state.currentAccounts[0]) {
+        console.log("good");
+        const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/${tokenId}`;
+        
+        try {
+          const response = await fetch(metadataUrl);
+          const metadata = await response.json();
+          const imageUrl = metadata.image;
+          this.setState({ imageUrl });
+          // 본인의 토큰을 찾았으므로 반복문을 종료합니다.
+          break;
+        } catch (error) {
+          console.error("Error fetching metadata:", error);
+        }
       }
     }
   };
 
   fNickname = async (id) => {
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
-      ERC721,
-      this.state.ERC721contractAddress
-    );
+    const tokenContract = this.getTokenContract(ERC721,this.state.ERC721contractAddress);
     const myNickname = await tokenContract.methods
       .getNickname(this.state.currentAccounts[0])
       .call();
@@ -519,34 +415,14 @@ class App extends Component {
   };
 
   fTokenApprove = async (getCrumb) => {
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
-      ERC20,
-      this.state.ERC20contractAddress
-    );
+    const tokenContract = new this.getTokenContract(ERC20,this.state.ERC20contractAddress);
     //vote 또한 인자로 가져와야함
     try {
       const data = tokenContract.methods
         .approve(this.state.rewardContractAddress, getCrumb)
         .encodeABI();
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: this.state.currentAccounts[0],
-              to: this.state.ERC20contractAddress,
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          alert("Woot! Controller added successfully!");
-        })
-        .catch((e) => {
-          alert("Oops! Adding controller failed!");
-        });
+        await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC20contractAddress, data, undefined);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -558,45 +434,28 @@ class App extends Component {
 
   /* 수정사항 필요 < id 값을 받아와야함 */
   fMintByETH_FT = async (id) => {
-    const web3 = this.state.web3;
-    const contract = new web3.eth.Contract(
+    const web3 = this.getWeb3();
+    const contract = this.getTokenContract(
       ERC1155,
       this.state.ERC1155contractAddress
     );
-    const from = this.state.currentAccounts[0];
     const price = web3.utils.toWei("1", "wei"); // 수정된 코드
+    console.log(price)
+    if(price === 1) {console.log('true')}
     //id는 받아오는걸로 수정해야함
     try {
       const data = contract.methods
-        .mint(from, id, this.state.rewardContractAddress)
+        .mint(this.state.currentAccounts[0], id, this.state.rewardContractAddress)
         .encodeABI();
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: from,
-              to: this.state.ERC1155contractAddress,
-              value: web3.utils.toHex(web3.utils.toWei(price)),
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          console.log(`Successfully minted 1 NFT.`);
-        })
-        .catch((e) => {
-          console.error("Error minting tokens:", e);
-        });
+        await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC1155contractAddress, data, price);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   fBalanceOf = async (id) => {
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
+    const tokenContract = this.getTokenContract(
       ERC1155,
       this.state.ERC1155contractAddress
     );
@@ -608,8 +467,7 @@ class App extends Component {
   };
 
   fSetApprovalForAll = async () => {
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
+    const tokenContract = this.getTokenContract(
       ERC1155,
       this.state.ERC1155contractAddress
     );
@@ -619,23 +477,7 @@ class App extends Component {
         .setApprovalForAll(this.state.rewardContractAddress, true)
         .encodeABI();
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: this.state.currentAccounts[0],
-              to: this.state.ERC1155contractAddress,
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          alert("Woot! Controller added successfully!");
-        })
-        .catch((e) => {
-          alert("Oops! Adding controller failed!");
-        });
+        await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC1155contractAddress, data, undefined);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -646,8 +488,7 @@ class App extends Component {
   //////////////
 
   fCheckAndClaimGoodToken = async (vote) => {
-    const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(
+    const tokenContract = this.getTokenContract(
       Reward,
       this.state.rewardContractAddress
     );
@@ -657,144 +498,82 @@ class App extends Component {
         .checkAndClaimGoodToken(vote)
         .encodeABI();
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: this.state.currentAccounts[0],
-              to: this.state.rewardContractAddress,
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          alert("Woot! Controller added successfully!");
-        })
-        .catch((e) => {
-          alert("Oops! Adding controller failed!");
-        });
+        await this.sendTransaction(this.state.currentAccounts[0], this.state.rewardContractAddress, data, undefined);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   fExchangeEther = async (getPrice) => {
-    const web3 = this.state.web3;
-    const contract = new web3.eth.Contract(
+    const web3 = this.getWeb3();
+    const contract = this.getTokenContract(
       Reward,
       this.state.rewardContractAddress
     );
-    const from = this.state.currentAccounts[0];
 
-    const crumbToSend = web3.utils.toWei(String(getPrice), "ether");
+    const crumbToSend = web3.utils.toWei(String(getPrice), "wei");
     await this.fTokenApprove(crumbToSend);
 
     try {
       const data = contract.methods.exchangeEther(crumbToSend).encodeABI();
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: from,
-              to: this.state.rewardContractAddress,
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          console.log(`Successfully exchange ether`);
-        })
-        .catch((e) => {
-          console.error("Error minting tokens:", e);
-        });
+      await this.sendTransaction(this.state.currentAccounts[0], this.state.rewardContractAddress, data, crumbToSend);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   fStartVote = async () => {
-    const web3 = this.state.web3;
-    const contract = new web3.eth.Contract(
+    const web3 = this.getWeb3();
+    const contract = this.getTokenContract(
       Reward,
       this.state.rewardContractAddress
     );
-    const from = this.state.currentAccounts[0];
-    const valueToSend = web3.utils.toWei(String(1), "wei");
+
+    const value = web3.utils.toWei(String(1), "wei");
     //id는 받아오는걸로 수정해야함
     try {
       const data = contract.methods.startVote().encodeABI();
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: from,
-              to: this.state.rewardContractAddress,
-              value: web3.utils.toHex(web3.utils.toWei(valueToSend)),
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          console.log(`Successfully minted 1 NFT.`);
-        })
-        .catch((e) => {
-          console.error("Error minting tokens:", e);
-        });
+      await this.sendTransaction(this.state.currentAccounts[0], this.state.rewardContractAddress, data, value);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   fVote = async (id, is) => {
-    const web3 = this.state.web3;
-    const contract = new web3.eth.Contract(
+    const contract = this.getTokenContract(
       Reward,
       this.state.rewardContractAddress
     );
-    const from = this.state.currentAccounts[0];
     //id는 받아오는걸로 수정해야함
-
     try {
       const data = contract.methods.vote(id, is).encodeABI();
 
-      window.ethereum
-        .request({
-          method: "eth_sendTransaction",
-          params: [
-            {
-              from: from,
-              to: this.state.rewardContractAddress,
-              data,
-            },
-          ],
-        })
-        .then(() => {
-          console.log(`Successfully exchange ether`);
-        })
-        .catch((e) => {
-          console.error("Error minting tokens:", e);
-        });
+      await this.sendTransaction(this.state.currentAccounts[0], this.state.rewardContractAddress, data, undefined);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   fVotes_view = async (id) => {
-    const web3 = this.state.web3;
-    const contract = new web3.eth.Contract(
+    const contract = this.getTokenContract(
       Reward,
       this.state.rewardContractAddress
     );
     const data = await contract.methods.votes(id).call();
 
+    const contract_nft = await this.getTokenContract(
+      ERC721,
+      this.state.ERC721contractAddress
+    );
+
+    const proposerId = await contract_nft.methods.getNickname(data.proposer).call();
+
+      console.log(proposerId)
     // 필요한 정보만 선택
     const filteredData = {
-      id: data.id,
+      id: proposerId,
       proposer: data.proposer,
       startTime: data.startTime,
       endTime: data.endTime,
@@ -809,18 +588,18 @@ class App extends Component {
   };
 
   fHasVoted = async (id) => {
-    const web3 = this.state.web3;
-    const contract = new web3.eth.Contract(
+    const contract = this.getTokenContract(
       Reward,
       this.state.rewardContractAddress
     );
-    const from = this.state.currentAccounts[0];
 
-    const data = await contract.methods.hasVoted(from, id).call();
+    const data = await contract.methods.hasVoted(this.state.currentAccounts[0], id).call();
 
     console.log(data);
     return data;
   };
+
+  
 
   render() {
     return (
@@ -836,7 +615,8 @@ class App extends Component {
                 fetchImageMetadata={this.fetchImageMetadata}
                 fTokenBalanceOf={this.fTokenBalanceOf}
                 addTokenToMetaMask={this.addTokenToMetaMask}
-                /*fNickname = {this.fNickname}*/
+                fNickname = {this.fNickname}
+                
               />
             }
           />

@@ -35,6 +35,8 @@ const VotePage = ({
     const fetchData = async () => {
       for (let i = startIndex; i <= endIndex; i++) {
         const data = await fVotes_view(i);
+        const getProposerNick = data.proposer;
+        console.log(getProposerNick)
         newDisplayedVoteData.push(data);
         if (newDisplayedVoteData.length === 5) {
           setDisplayedVoteData(newDisplayedVoteData);
