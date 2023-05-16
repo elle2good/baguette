@@ -27,9 +27,15 @@ import Reward from "./abi/Reward.json";
 /////////////////
 // Page import //
 /////////////////
+import LandingPage from "./pages/LandingPage";
+import AboutPage from "./pages/AboutPage";
+import BreadcrumbTrailPage from "./pages/BreadcrumbTrailPage";
+import GatheringsPage from "./pages/GatheringsPage";
+import ProfilePage from "./pages/ProfilePage";
+import SetProfilePage from "./pages/SetProfilePage";
+// 삭제 예정
 import VotePage from "./pages/VotePage";
 import FTMintPage from "./pages/FTMintPage";
-import LandingPage from "./pages/LandingPage";
 import NFTMintPage from "./pages/NFTMintPage";
 import ETHTransferPage from "./pages/ETHTransferPage";
 import TokenTransferPage from "./pages/TokenTransferPage";
@@ -37,11 +43,15 @@ import ControllerPage from "./pages/admin/ControllerPage";
 import ExchangeTokenPage from "./pages/ExchangeTokenPage";
 import NFTTeamMintPage from "./pages/admin/NFTTeamMintPage";
 
+//////////////////////
+// Component import //
+//////////////////////
+import Nav from "./components/Nav";
+
 /////////
 // CSS //
 /////////
 import "./App.css";
-import Nav from "./components/Nav";
 
 ///////////////
 // App Class //
@@ -80,12 +90,11 @@ class App extends Component {
   getWeb3 = () => {
     return this.state.web3;
   };
-  
+
   getTokenContract = (ABI, contractAddress) => {
     const web3 = this.getWeb3();
     return new web3.eth.Contract(ABI, contractAddress);
   };
-  
 
   async componentDidMount() {
     //await this.connectToMetaMask();
@@ -93,7 +102,7 @@ class App extends Component {
     this.setupNetworkChangedEventListener();
     this.fetchImageMetadata();
   }
-  
+
   //handlePageChange는 VotePage.js에서 투표 페이지를 보여줌
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
@@ -178,7 +187,6 @@ class App extends Component {
         await this.requestAccounts();
         await this.createWeb3Instance();
         await this.handleAccountChanged();
-
       } catch (error) {
         console.error("Error:", error);
       }
@@ -195,21 +203,28 @@ class App extends Component {
             from,
             to,
             data,
-            value: value ? web3.utils.toHex(web3.utils.toWei(value)) : undefined,
+            value: value
+              ? web3.utils.toHex(web3.utils.toWei(value))
+              : undefined,
           },
-          console.log(value)
+          console.log(value),
         ],
       });
-      console.log(value)
+      console.log(value);
       alert("Transaction successful!");
     } catch (e) {
       alert("Oops! Transaction failed!");
     }
   };
 
-  transferETH = async (to, value) => {    
+  transferETH = async (to, value) => {
     try {
-      await this.sendTransaction(this.state.currentAccounts[0], to, undefined, value);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        to,
+        undefined,
+        value
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -224,8 +239,13 @@ class App extends Component {
       return;
     }
 
-    const tokenContract = this.getTokenContract(ERC721,this.state.ERC721contractAddress);
-    const tokenBalance = await tokenContract.methods.balanceOf(this.state.currentAccounts[0]).call();
+    const tokenContract = this.getTokenContract(
+      ERC721,
+      this.state.ERC721contractAddress
+    );
+    const tokenBalance = await tokenContract.methods
+      .balanceOf(this.state.currentAccounts[0])
+      .call();
     return tokenBalance;
   };
 
@@ -240,8 +260,12 @@ class App extends Component {
     );
     try {
       const data = tokenContract.methods.transfer(to, value).encodeABI();
-      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC20contractAddress, data, undefined);
-
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.ERC20contractAddress,
+        data,
+        undefined
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -255,7 +279,12 @@ class App extends Component {
     try {
       const data = tokenContract.methods.addController(to).encodeABI(); // 'to' 인자를 함수에 전달
 
-      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC20contractAddress, data, undefined);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.ERC20contractAddress,
+        data,
+        undefined
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -269,8 +298,12 @@ class App extends Component {
     try {
       const data = tokenContract.methods.removeController(to).encodeABI(); // 'to' 인자를 함수에 전달
 
-      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC20contractAddress, data, undefined);
-
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.ERC20contractAddress,
+        data,
+        undefined
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -288,7 +321,7 @@ class App extends Component {
     const tokenBalanceOfEther = web3.utils.fromWei(tokenBalanceOfWei, "ether");
     const tokenBalanceOfTruncated =
       Math.floor(parseFloat(tokenBalanceOfEther) * 10000) / 10000;
-      console.log(tokenBalanceOfEther)
+    console.log(tokenBalanceOfEther);
     return tokenBalanceOfTruncated;
   };
 
@@ -330,7 +363,12 @@ class App extends Component {
     try {
       const data = tokenContract.methods.setSale().encodeABI();
 
-      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC721contractAddress, data, undefined);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.ERC721contractAddress,
+        data,
+        undefined
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -342,11 +380,16 @@ class App extends Component {
       ERC721,
       this.state.ERC721contractAddress
     );
-    const price = web3.utils.toWei("0", "wei");;
+    const price = web3.utils.toWei("0", "wei");
     try {
       const data = contract.methods.mintByETH(1, "FE").encodeABI();
 
-      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC721contractAddress, data, price);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.ERC721contractAddress,
+        data,
+        price
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -362,7 +405,12 @@ class App extends Component {
     try {
       const data = contract.methods.teamMint(1).encodeABI();
 
-      await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC721contractAddress, data, price);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.ERC721contractAddress,
+        data,
+        price
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -377,20 +425,23 @@ class App extends Component {
     }
 
     const web3 = this.state.web3;
-    const tokenContract = new web3.eth.Contract(ERC721, this.state.ERC721contractAddress);
-  
+    const tokenContract = new web3.eth.Contract(
+      ERC721,
+      this.state.ERC721contractAddress
+    );
+
     // 총 토큰 수를 조회합니다.
     const totalSupply = await tokenContract.methods.totalSupply().call();
-  
+
     // 총 토큰 수만큼 반복하여, 각 토큰의 소유자를 확인합니다.
     for (let tokenId = 0; tokenId < totalSupply; tokenId++) {
       const owner = await tokenContract.methods.ownerOf(tokenId).call();
-  
+
       // 만약 토큰의 소유자가 사용자와 일치한다면, 해당 토큰 ID를 처리합니다.
       if (owner === this.state.currentAccounts[0]) {
         console.log("good");
         const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/${tokenId}`;
-        
+
         try {
           const response = await fetch(metadataUrl);
           const metadata = await response.json();
@@ -406,7 +457,10 @@ class App extends Component {
   };
 
   fNickname = async (id) => {
-    const tokenContract = this.getTokenContract(ERC721,this.state.ERC721contractAddress);
+    const tokenContract = this.getTokenContract(
+      ERC721,
+      this.state.ERC721contractAddress
+    );
     const myNickname = await tokenContract.methods
       .getNickname(this.state.currentAccounts[0])
       .call();
@@ -415,14 +469,22 @@ class App extends Component {
   };
 
   fTokenApprove = async (getCrumb) => {
-    const tokenContract = new this.getTokenContract(ERC20,this.state.ERC20contractAddress);
+    const tokenContract = new this.getTokenContract(
+      ERC20,
+      this.state.ERC20contractAddress
+    );
     //vote 또한 인자로 가져와야함
     try {
       const data = tokenContract.methods
         .approve(this.state.rewardContractAddress, getCrumb)
         .encodeABI();
 
-        await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC20contractAddress, data, undefined);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.ERC20contractAddress,
+        data,
+        undefined
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -440,15 +502,26 @@ class App extends Component {
       this.state.ERC1155contractAddress
     );
     const price = web3.utils.toWei("1", "wei"); // 수정된 코드
-    console.log(price)
-    if(price === 1) {console.log('true')}
+    console.log(price);
+    if (price === 1) {
+      console.log("true");
+    }
     //id는 받아오는걸로 수정해야함
     try {
       const data = contract.methods
-        .mint(this.state.currentAccounts[0], id, this.state.rewardContractAddress)
+        .mint(
+          this.state.currentAccounts[0],
+          id,
+          this.state.rewardContractAddress
+        )
         .encodeABI();
 
-        await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC1155contractAddress, data, price);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.ERC1155contractAddress,
+        data,
+        price
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -477,7 +550,12 @@ class App extends Component {
         .setApprovalForAll(this.state.rewardContractAddress, true)
         .encodeABI();
 
-        await this.sendTransaction(this.state.currentAccounts[0], this.state.ERC1155contractAddress, data, undefined);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.ERC1155contractAddress,
+        data,
+        undefined
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -498,7 +576,12 @@ class App extends Component {
         .checkAndClaimGoodToken(vote)
         .encodeABI();
 
-        await this.sendTransaction(this.state.currentAccounts[0], this.state.rewardContractAddress, data, undefined);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.rewardContractAddress,
+        data,
+        undefined
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -517,7 +600,12 @@ class App extends Component {
     try {
       const data = contract.methods.exchangeEther(crumbToSend).encodeABI();
 
-      await this.sendTransaction(this.state.currentAccounts[0], this.state.rewardContractAddress, data, crumbToSend);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.rewardContractAddress,
+        data,
+        crumbToSend
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -535,7 +623,12 @@ class App extends Component {
     try {
       const data = contract.methods.startVote().encodeABI();
 
-      await this.sendTransaction(this.state.currentAccounts[0], this.state.rewardContractAddress, data, value);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.rewardContractAddress,
+        data,
+        value
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -550,7 +643,12 @@ class App extends Component {
     try {
       const data = contract.methods.vote(id, is).encodeABI();
 
-      await this.sendTransaction(this.state.currentAccounts[0], this.state.rewardContractAddress, data, undefined);
+      await this.sendTransaction(
+        this.state.currentAccounts[0],
+        this.state.rewardContractAddress,
+        data,
+        undefined
+      );
     } catch (error) {
       console.error("Error:", error);
     }
@@ -568,9 +666,11 @@ class App extends Component {
       this.state.ERC721contractAddress
     );
 
-    const proposerId = await contract_nft.methods.getNickname(data.proposer).call();
+    const proposerId = await contract_nft.methods
+      .getNickname(data.proposer)
+      .call();
 
-      console.log(proposerId)
+    console.log(proposerId);
     // 필요한 정보만 선택
     const filteredData = {
       id: proposerId,
@@ -593,13 +693,13 @@ class App extends Component {
       this.state.rewardContractAddress
     );
 
-    const data = await contract.methods.hasVoted(this.state.currentAccounts[0], id).call();
+    const data = await contract.methods
+      .hasVoted(this.state.currentAccounts[0], id)
+      .call();
 
     console.log(data);
     return data;
   };
-
-  
 
   render() {
     return (
@@ -615,11 +715,29 @@ class App extends Component {
                 fetchImageMetadata={this.fetchImageMetadata}
                 fTokenBalanceOf={this.fTokenBalanceOf}
                 addTokenToMetaMask={this.addTokenToMetaMask}
-                fNickname = {this.fNickname}
-                
+                fNickname={this.fNickname}
               />
             }
           />
+          {/* Menu */}
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/breadcrumb" element={<BreadcrumbTrailPage />} />
+          <Route path="/gatherings" element={<GatheringsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+
+          {/* Set Profile */}
+          <Route
+            path="/set_profile"
+            element={
+              <SetProfilePage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fMintByETH={this.fMintByETH}
+              />
+            }
+          />
+
+          {/* 임시 페이지 (삭제 예정) */}
           <Route
             path="/eth_transfer"
             element={

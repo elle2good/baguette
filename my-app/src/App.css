@@ -14,6 +14,9 @@
     "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
 
+/* /// */
+/* nav */
+/* /// */
 .box-nav {
   display: flex;
   justify-content: space-between;
@@ -41,14 +44,14 @@
 
 .box-nav .btn-menu-toggle {
   position: relative;
-  width: 36px;
-  height: 50px;
+  width: 30px;
+  height: 28px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: center;
-  gap: 11px;
+  gap: 8.5px;
   transition-duration: 0.3s;
 }
 
@@ -93,15 +96,21 @@
 }
 
 .box-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
+  height: 100vh;
+  padding: 30px;
 }
 
 .box-menu .btn-nav {
   width: 150px;
   height: 50px;
-  margin-right: 10px;
+  margin: 10px;
   background: none;
-  font-size: 16px;
+  font-size: 20px;
+  font-weight: 500;
   cursor: pointer;
 }
 
@@ -143,136 +152,68 @@
   width: 40px;
 }
 
-@media (max-width: 800px) {
-  /* /////////// */
-  /* /// nav /// */
-  /* /////////// */
-  .box-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 70px;
-    padding: 19px 22px;
-    border-bottom: 1px solid #eeeeee;
-  }
+/* /////////// */
+/* Set Profile */
+/* /////////// */
+.box-set-profile {
+  display: flex;
+  flex-direction: column;
+  padding: 30px 22px;
+}
 
-  /* main이동 */
-  .box-nav .btn-nav-main {
-    width: 90px;
-    background: none;
-  }
+.box-set-profile .btn-nft-mint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  border-radius: 75px;
+  color: #a3a3a3;
+  font-size: 16px;
+  font-weight: 400;
+}
 
-  .box-nav .btn-nav-main > img {
-    width: 100%;
-  }
+.box-set-profile .box-nft-profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 150px;
+  border-radius: 75px;
+  overflow: hidden;
+}
 
-  /* menu */
-  .box-nav #btnMenu {
-    display: none;
-  }
+.box-set-profile .box-nft-profile > img {
+  width: 150px;
+  height: 150px;
+}
 
-  .box-nav .btn-menu-toggle {
-    position: relative;
-    width: 36px;
-    height: 50px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 11px;
-    transition-duration: 0.3s;
-  }
+.box-set-profile .label-nickname {
+  margin-top: 40px;
+  font-size: 16px;
+}
 
-  .box-nav .btn-menu-toggle .btn-menu-bars {
-    width: 100%;
-    height: 2px;
-    background-color: #222222;
-    border-radius: 5px;
-    transition-duration: 0.3s;
-  }
+.box-set-profile .input-nickname {
+  width: 100%;
+  height: 54px;
+  margin-top: 20px;
+  padding: 18px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  font-size: 16px;
+}
 
-  .box-nav .btn-menu-toggle .btn-menu-bars#bar2 {
-    width: 75%;
-    height: 2px;
-    background-color: #222222;
-    border-radius: 5px;
-    transition-duration: 0.3s;
-  }
+.box-set-profile .btn-profile-save {
+  width: 100%;
+  height: 54px;
+  margin-top: 40px;
+  background-color: #888888;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 16px;
+}
 
-  #btnMenu:checked + .btn-menu-toggle .btn-menu-bars {
-    margin-left: 13px;
-  }
-
-  #btnMenu:checked + .btn-menu-toggle #bar2 {
-    transform: rotate(135deg);
-    margin-left: 0;
-    transform-origin: center;
-    transition-duration: 0.1s;
-    opacity: 0;
-  }
-
-  #btnMenu:checked + .btn-menu-toggle #bar1 {
-    transform: rotate(45deg);
-    transition-duration: 0.3s;
-    transform-origin: left center;
-  }
-
-  #btnMenu:checked + .btn-menu-toggle #bar3 {
-    transform: rotate(-45deg);
-    transition-duration: 0.3s;
-    transform-origin: left center;
-  }
-
-  .box-menu {
-    width: 100%;
-  }
-
-  .box-menu .btn-nav {
-    width: 150px;
-    height: 50px;
-    margin-right: 10px;
-    background: none;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  .box-menu .btn-nav:hover {
-    text-decoration: underline;
-  }
-
-  .box-signin-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .box-signin-btn .box-about-team {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    height: 1000px;
-    background-color: #eeeeee;
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-  }
-
-  .box-signin-btn > button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 350px;
-    height: 60px;
-    background-color: #ffffff;
-    border: 1px solid #222222;
-    border-radius: 20px;
-    font-size: 17px;
-    font-weight: 500;
-  }
-
-  .box-signin-btn > button > img {
-    width: 40px;
-  }
+.box-set-profile .btn-profile-save:disabled {
+  background-color: #dddddd;
 }
