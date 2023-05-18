@@ -1,4 +1,4 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css");
+@import url("https://fonts.cdnfonts.com/css/poppins");
 
 * {
   margin: 0;
@@ -7,34 +7,39 @@
   border: none;
   outline: none;
   box-sizing: border-box;
-  color: #222222;
-  font-family: "Pretendard Variable", Pretendard, -apple-system,
-    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
-    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  font-family: "Poppins", Poppinsnp, -apple-system, BlinkMacSystemFont,
+    system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo",
+    "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", sans-serif;
+}
+
+/* //////////////// */
+/* Background Color */
+/* //////////////// */
+.bg-pink {
+  background-color: #fee6ff;
 }
 
 /* /// */
 /* nav */
 /* /// */
 .box-nav {
+  position: fixed;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 70px;
-  padding: 19px 22px;
-  border-bottom: 1px solid #eeeeee;
+  height: 80px;
+  padding: 25px 22px;
 }
 
 /* main이동 */
 .box-nav .btn-nav-main {
-  width: 90px;
   background: none;
-}
-
-.box-nav .btn-nav-main > img {
-  width: 100%;
+  color: #2d712a;
+  font-size: 30pt;
+  font-weight: 600;
+  letter-spacing: -2px;
 }
 
 /* menu */
@@ -58,7 +63,7 @@
 .box-nav .btn-menu-toggle .btn-menu-bars {
   width: 100%;
   height: 2px;
-  background-color: #222222;
+  background-color: #2d712a;
   border-radius: 5px;
   transition-duration: 0.3s;
 }
@@ -66,7 +71,7 @@
 .box-nav .btn-menu-toggle .btn-menu-bars#bar2 {
   width: 75%;
   height: 2px;
-  background-color: #222222;
+  background-color: #2d712a;
   border-radius: 5px;
   transition-duration: 0.3s;
 }
@@ -96,7 +101,6 @@
 }
 
 .box-menu {
-  display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
@@ -105,7 +109,6 @@
 }
 
 .box-menu .btn-nav {
-  width: 150px;
   height: 50px;
   margin: 10px;
   background: none;
@@ -118,38 +121,122 @@
   text-decoration: underline;
 }
 
-.box-signin-btn {
+/* //////////// */
+/* Landing Page */
+/* //////////// */
+.box-landing {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  background-color: #fee6ff;
 }
 
-.box-signin-btn .box-about-team {
+.box-landing .box-main {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   width: 100%;
-  height: 1000px;
-  background-color: #eeeeee;
-  font-size: 20px;
+  padding: 150px 25px 0;
+  background-color: #fee6ff;
+  color: #2d712a;
+  font-size: 22pt;
+  font-weight: 300;
+  letter-spacing: -0.5pt;
+  line-height: 30pt;
+}
+
+.box-landing .box-main .txt-main {
   font-weight: 700;
-  text-align: center;
 }
 
-.box-signin-btn > button {
+.box-landing .box-main .txt-main-sub {
+  width: 90%;
+  margin-top: 40px;
+  font-size: 14pt;
+  line-height: 22pt;
+}
+
+.box-landing .box-main > img {
+  width: 90%;
+  margin-top: 25px;
+}
+
+.box-landing > button.btn-signin {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  width: 350px;
-  height: 60px;
+  width: 90%;
+  height: 86px;
+  margin: 50px auto 200px;
+  padding: 20px;
   background-color: #ffffff;
-  border: 1px solid #222222;
-  border-radius: 20px;
-  font-size: 17px;
-  font-weight: 500;
+  color: #2d712a;
+  font-size: 16pt;
+  box-shadow: 0px 4px 4px #0002;
 }
 
-.box-signin-btn > button > img {
-  width: 40px;
+.box-landing > button.btn-signin > img {
+  width: 50px;
+}
+
+.box-landing .box-about {
+  display: flex;
+  flex-direction: column;
+  padding: 60px 25px;
+  background-color: #2d712a;
+  color: #ffffff;
+  font-size: 14pt;
+  font-weight: 300;
+}
+
+.box-landing .box-about .txt-about-title {
+  margin-top: 40px;
+  font-weight: 700;
+}
+
+.box-landing .box-about .txt-about-list {
+  margin: 40px 0;
+  padding: 10px;
+}
+
+.box-landing .box-works {
+  display: flex;
+  flex-direction: column;
+  padding: 60px 25px;
+  background-color: #f9e5c7;
+  color: #2d712a;
+  font-size: 14pt;
+  font-weight: 300;
+}
+
+.box-landing .box-works > img {
+  width: 20%;
+}
+
+.box-landing .box-works .txt-works-title {
+  margin-top: 40px;
+  font-weight: 700;
+}
+
+.box-landing .box-works .txt-works-subtitle {
+  margin-top: 40px;
+  font-size: 13pt;
+  font-weight: 700;
+}
+
+.box-landing .box-works .txt-works-sub {
+  font-size: 13pt;
+}
+
+.box-landing .box-works .txt-works-list {
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.box-landing .box-works .txt-works-list > li {
+  font-size: 13pt;
+}
+
+.box-landing .box-works .img-breadcrumb {
+  margin-top: 60px;
 }
 
 /* /////////// */
@@ -172,6 +259,7 @@
   color: #a3a3a3;
   font-size: 16px;
   font-weight: 400;
+  cursor: pointer;
 }
 
 .box-set-profile .box-nft-profile {

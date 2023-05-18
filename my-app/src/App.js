@@ -749,8 +749,7 @@ class App extends Component {
                 fMintByETH={this.fMintByETH}
               />
             }
-          />          
-
+          />
 
           {/* 임시 페이지 (삭제 예정) */}
           <Route

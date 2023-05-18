@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // logo
@@ -47,9 +47,9 @@ const Nav = () => {
 
   return (
     <div>
-      <div className="box-nav">
+      <div id="bgNav" className="box-nav bg-pink">
         <button className="btn-nav-main" onClick={goToMain}>
-          <img src={lgBaguette} />
+          Baguette
         </button>
         <input
           type="checkbox"
