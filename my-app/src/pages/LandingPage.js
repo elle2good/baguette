@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 // import Img
 import baguetteImg from "../images/img_baguette.png";
@@ -19,7 +20,11 @@ const LandingPage = ({
   fTokenBalanceOf,
   addTokenToMetaMask,
   fNickname,
+  aboutRef,
+  howItWorksRef,
 }) => {
+  const navigate = useNavigate();
+
   const [tokenBalance, setTokenBalance] = useState("");
   const [nickname, setNickname] = useState("");
 
@@ -41,9 +46,26 @@ const LandingPage = ({
     alert(`Hello, ${nickname}!`);
   };
 
+  // Gatherings 이동
+  const goToGatherings = () => {
+    navigate("/gatherings");
+  };
+
+  // BreadCrumb Trail 이동
+  const goToBreadcrumbTrail = () => {
+    navigate("/breadcrumb");
+  };
+
+  // levelRef
+  const levelRef = useRef();
+
+  // Level 이동
+  const goToLevel = () => {
+    levelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="box-landing">
-      {/* <p>내 주소: {state.currentAccounts}</p> */}
       <div id="boxMain" className="box-main">
         <p>
           Amplify your impact.
@@ -58,11 +80,11 @@ const LandingPage = ({
           informal volunteers.
         </p>
       </div>
-      <button className="btn-signin" onClick={connectToMetaMask}>
-        Sign in with MetaMask
-        <img src={Fox} alt="metamask logo" />
-      </button>
-      <div className="box-about">
+      <div id="boxAbout" className="box-about" ref={aboutRef}>
+        <button className="btn-signin" onClick={connectToMetaMask}>
+          Sign in with MetaMask
+          <img src={Fox} alt="metamask logo" />
+        </button>
         <p className="txt-about-title">Our vision:</p>
         <p className="txt-about-sub">
           We dream of a world where stepping up for social impact is as easy and
@@ -92,9 +114,23 @@ const LandingPage = ({
           and provides easier access to records for volunteers.
         </p>
       </div>
-      <div className="box-works">
+      {/* <div>
+        <div>
+          <img />
+          <p>Name</p>
+          <p>description</p>
+        </div>
+      </div> */}
+      <div className="box-works" ref={howItWorksRef}>
         <img src={baguetteCharImg} alt="baguette Character" />
         <p className="txt-works-title">How it works:</p>
+        <p className="txt-works-sub">
+          The Baguette ecosystem is designed to integrate the real world to
+          Blockchain and transfer offline impact into online influence  and fun.
+        </p>
+        <button className="btn-works-more" onClick={goToLevel}>
+          Learn About Levels
+        </button>
         <p className="txt-works-subtitle">Gatherings</p>
         <p className="txt-works-sub">
           Environmentally and social impact activities where communities come
@@ -111,6 +147,9 @@ const LandingPage = ({
           All Sandwiches and the list of attendants are posted on a Blockchain
           for transparent and secure storage.
         </p>
+        <button className="btn-works-more" onClick={goToGatherings}>
+          Go to Gatherings
+        </button>
         <img
           className="img-breadcrumb"
           src={breadCrumbTrailImg}
@@ -122,6 +161,9 @@ const LandingPage = ({
           receive Crumbs. The post goes through a community voting system, and
           the highest ranked posts will receive rewards.
         </p>
+        <button className="btn-works-more" onClick={goToBreadcrumbTrail}>
+          Go to Breadcrumb Trail
+        </button>
         <p className="txt-works-subtitle">Crumbs</p>
         <p className="txt-works-sub">
           Tokens in the Baguette ecosystem. Crumbs are not just a
@@ -155,7 +197,7 @@ const LandingPage = ({
           An NFT Marketplace that sells Art & Utility NFT with proceeds going to
           a social or environmental cause.
         </p>
-        <div className="box-level">
+        <div className="box-level" ref={levelRef}>
           <p className="txt-level-title">Levels</p>
           <div className="box-level-description box-level-sky">
             <img
@@ -165,7 +207,10 @@ const LandingPage = ({
             />
             <div>
               <p>Croutons:</p>
-              <p>Comming Soon</p>
+              <p>
+                Beginner level. Able to participate in activities and post on
+                the Breadcrumb Trail.
+              </p>
             </div>
           </div>
           <div className="box-level-description box-level-brown-line">
@@ -176,7 +221,11 @@ const LandingPage = ({
             />
             <div>
               <p>Baguette:</p>
-              <p>Comming Soon</p>
+              <p>
+                Engaged level. Users that have participated in at least 3
+                Gatherings and won 3 rewards. Able to participate in activities
+                and post on the Breadcrumb Trail. Voting rights.
+              </p>
             </div>
           </div>
           <div className="box-level-description box-level-brown">
@@ -187,7 +236,10 @@ const LandingPage = ({
             />
             <div>
               <p>Garlic Bread:</p>
-              <p>Comming Soon</p>
+              <p>
+                Intermediate level. Participate and host activities. Post on the
+                Breadcrumb Trail with higher rewards. Voting rights.
+              </p>
             </div>
           </div>
           <div className="box-level-description box-level-pink">
@@ -198,7 +250,11 @@ const LandingPage = ({
             />
             <div>
               <p>Bruschetta:</p>
-              <p>Comming Soon</p>
+              <p>
+                Advanced level. Participate and host activities. Post on the
+                Breadcrumb Trail with higher rewards. Voting rights and NFT
+                fundraising opportunities.
+              </p>
             </div>
           </div>
           <div className="box-level-description box-level-sky">
@@ -209,7 +265,12 @@ const LandingPage = ({
             />
             <div>
               <p>Sandwiches:</p>
-              <p>Comming Soon</p>
+              <p>
+                Expert level. Participate and host activities. Post on the
+                Breadcrumb Trail with higher rewards. Voting rights and NFT
+                fundraising opportunities. Recruit participants with activated
+                DM features.
+              </p>
             </div>
           </div>
           <div className="box-level-description box-level-brown-line">
@@ -220,7 +281,11 @@ const LandingPage = ({
             />
             <div>
               <p>Canapes:</p>
-              <p>Comming Soon</p>
+              <p>
+                Leader level. Participate and host activities. Post on the
+                Breadcrumb Trail with higher rewards. NFT fundraising. Recruit
+                participants with activated DM features & other rewarding perks.
+              </p>
             </div>
           </div>
         </div>

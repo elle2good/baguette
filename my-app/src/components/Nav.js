@@ -1,12 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Nav = () => {
+const Nav = ({ aboutRef, howItWorksRef }) => {
   const navigate = useNavigate();
+
+  // 스크롤 위치 받아올 State
+  const [scrollValue, setScrollValue] = useState(0);
+
+  const handleScroll = () => {
+    setScrollValue(window.scrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleScroll]);
 
   // toggle Display Boolean으로 값 변경
   const [toggleOpen, setToggleOpen] = useState(false);
   const [toggleCheck, setToggleCheck] = useState(false);
+
   const toggleMenu = () => {
     setToggleOpen(!toggleOpen);
     setToggleCheck(!toggleCheck);
@@ -20,19 +35,16 @@ const Nav = () => {
 
   // About 이동
   const goToAbout = () => {
-    navigate("/about");
+    aboutRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     toggleMenu();
   };
 
-  // Breadcrumb Trail 이동
-  const goToBreadcrumbTrail = () => {
-    navigate("/breadcrumb");
-    toggleMenu();
-  };
-
-  // Gatherings 이동
-  const goToGatherings = () => {
-    navigate("/gatherings");
+  // How it Works 이동
+  const goToHowItWorks = () => {
+    howItWorksRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
     toggleMenu();
   };
 
@@ -45,9 +57,44 @@ const Nav = () => {
   return (
     <div>
       <div id="bgNav" className="box-nav">
-        <button className="btn-nav-main" onClick={goToMain}>
-          Baguette
-        </button>
+        <style jsx="true">
+          {`
+            .box-nav {
+              background-color: ${scrollValue > 760 ? "#2d712a" : "#fee6ff"};
+            }
+
+            .box-nav {
+              background-color: ${scrollValue > 1775 ? "#f9e5c7" : "none"};
+            }
+
+            .box-nav .btn-nav-main {
+              color: ${scrollValue > 760 ? "#ffffff" : "none"};
+            }
+
+            .box-nav .btn-nav-main {
+              color: ${scrollValue > 1775 ? "#2d712a" : "none"};
+            }
+
+            .btn-menu-toggle .square {
+              background: ${scrollValue > 760 && scrollValue < 1776
+                ? "#ffffff"
+                : "#2d712a"};
+            }
+
+            .box-menu {
+              display: ${toggleOpen ? "flex" : "none"};
+            }
+
+            .box-nav .btn-menu-toggle {
+              background-color: ${toggleOpen ? "#2d712a" : "none"};
+            }
+
+            .square {
+              background: ${toggleOpen ? "#ffffff!important" : "#2d712a"};
+            }
+          `}
+        </style>
+        <button className="btn-nav-main">Baguette</button>
         <div className="btn-menu-toggle" onClick={toggleMenu}>
           <div className="square" id="sq1"></div>
           <div className="square" id="sq2"></div>
@@ -60,21 +107,6 @@ const Nav = () => {
           <div className="square" id="sq9"></div>
         </div>
       </div>
-      <style jsx="true">
-        {`
-          .box-menu {
-            display: ${toggleOpen ? "flex" : "none"};
-          }
-
-          .box-nav .btn-menu-toggle {
-            background-color: ${toggleOpen ? "#2d712a" : "none"};
-          }
-
-          .square {
-            background: ${toggleOpen ? "#ffffff" : "#2d712a"};
-          }
-        `}
-      </style>
       <div className="box-menu">
         <button className="btn-nav" onClick={goToMain}>
           Main
@@ -82,10 +114,10 @@ const Nav = () => {
         <button className="btn-nav" onClick={goToAbout}>
           About
         </button>
-        <button className="btn-nav" onClick={goToBreadcrumbTrail}>
+        <button className="btn-nav" onClick={goToHowItWorks}>
           How it Works
         </button>
-        <button className="btn-nav" onClick={goToGatherings}>
+        <button className="btn-nav" onClick="">
           BakeShop<p>(Comming soon)</p>
         </button>
         <button className="btn-nav" onClick={goToProfile}>

@@ -42,7 +42,6 @@ import Reward from "./abi/Reward.json";
 // Page import //
 /////////////////
 import LandingPage from "./pages/LandingPage";
-import AboutPage from "./pages/AboutPage";
 import BreadcrumbTrailPage from "./pages/BreadcrumbTrailPage";
 import GatheringsPage from "./pages/GatheringsPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -759,10 +758,16 @@ class App extends Component {
     return data;
   };
 
+  constructor(props) {
+    super(props);
+    this.aboutRef = React.createRef();
+    this.howItWorksRef = React.createRef();
+  }
+
   render() {
     return (
       <div>
-        <Nav />
+        <Nav aboutRef={this.aboutRef} howItWorksRef={this.howItWorksRef} />
         <Routes>
           <Route
             path="/"
@@ -774,11 +779,12 @@ class App extends Component {
                 fTokenBalanceOf={this.fTokenBalanceOf}
                 addTokenToMetaMask={this.addTokenToMetaMask}
                 fNickname={this.fNickname}
+                aboutRef={this.aboutRef}
+                howItWorksRef={this.howItWorksRef}
               />
             }
           />
           {/* Menu */}
-          <Route path="/about" element={<AboutPage />} />
           <Route path="/breadcrumb" element={<BreadcrumbTrailPage />} />
           <Route path="/gatherings/*" element={<GatheringsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
