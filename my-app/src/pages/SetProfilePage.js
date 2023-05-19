@@ -1,8 +1,15 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from "react"; // useState를 제거했습니다.
 import { useNavigate } from "react-router-dom";
 
-const SetProfilePage = ({ state, connectToMetaMask, fetchImageMetadata, fMintByETH }) => {
+const SetProfilePage = ({
+  state,
+  connectToMetaMask,
+  fetchImageMetadata,
+  fMintByETH,
+}) => {
   const navigate = useNavigate();
+
+  // useState 코드를 제거했습니다.
 
   // Profile 이동
   const goToProfile = () => {
@@ -16,19 +23,23 @@ const SetProfilePage = ({ state, connectToMetaMask, fetchImageMetadata, fMintByE
       const real = await fetchedImageUrl;
       if (real) {
         state.imageUrl = fetchedImageUrl;
-      } else if (!state.imageUrl) {
-        await fMintByETH();
-        //const newFetchedImageUrl = await fetchImageMetadata();
-        //if (newFetchedImageUrl) {
-        //  state.imageUrl = newFetchedImageUrl;
-        //}
       }
+      // else if 코드를 제거했습니다.
     };
 
     initialize();
-  }, [connectToMetaMask, fetchImageMetadata, fMintByETH, state.imageUrl]);
+  }, [connectToMetaMask, fetchImageMetadata, state.imageUrl]); // nickname를 종속성 배열에서 제거했습니다.
 
+  // handleNicknameChange 함수를 제거했습니다.
 
+  const handleButtonClick = async () => {
+    const nickname = document.getElementById("inputNickname").value;
+    if (!nickname) {
+      alert("Please set your nickname first!");
+    } else {
+      await fMintByETH(nickname);
+    }
+  };
 
   return (
     <div className="box-set-profile">
@@ -37,11 +48,10 @@ const SetProfilePage = ({ state, connectToMetaMask, fetchImageMetadata, fMintByE
           <img src={state.imageUrl} alt="NFT 이미지" />
         </div>
       ) : (
-        <button onClick={fMintByETH} className="btn-nft-mint">
+        <button onClick={handleButtonClick} className="btn-nft-mint">
           Get NFT profile
         </button>
       )}
-      {/* 닉네임 설정 */}
       <label htmlFor="inputNickname" className="label-nickname">
         Nickname
       </label>
@@ -50,6 +60,7 @@ const SetProfilePage = ({ state, connectToMetaMask, fetchImageMetadata, fMintByE
         id="inputNickname"
         className="input-nickname"
         placeholder="About 6 Korean or 20 English characters"
+        // onChange 핸들러를 제거했습니다.
       />
       <button className="btn-profile-save" onClick={goToProfile}>
         Save

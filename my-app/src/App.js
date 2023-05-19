@@ -11,6 +11,7 @@
     Sueun Cho
     sueun.dev@gmail.com
  */
+
 /**
  * Baguette
  * @leader Elisabeth Kim, Sueun Cho
@@ -387,15 +388,17 @@ class App extends Component {
     }
   };
 
-  fMintByETH = async () => {
+  fMintByETH = async (nickname) => {
+    // 매개변수 nickname 추가
     const web3 = this.getWeb3();
     const contract = this.getTokenContract(
       ERC721,
       this.state.ERC721contractAddress
     );
     const price = web3.utils.toWei("0", "wei");
+    console.log(nickname);
     try {
-      const data = contract.methods.mintByETH(1, "FE").encodeABI();
+      const data = contract.methods.mintByETH(1, nickname).encodeABI(); // "FE" 대신 nickname 사용
 
       await this.sendTransaction(
         this.state.currentAccounts[0],
@@ -453,8 +456,9 @@ class App extends Component {
       // 만약 토큰의 소유자가 사용자와 일치한다면, 해당 토큰 ID를 처리합니다.
       if (owner === this.state.currentAccounts[0]) {
         console.log("good");
-        const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/${tokenId}`;
-
+        //const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/${tokenId}`;
+        const metadataUrl = `http://localhost:3000/json/${tokenId}`;
+        console.log(metadataUrl);
         try {
           const response = await fetch(metadataUrl);
           const metadata = await response.json();
@@ -713,7 +717,6 @@ class App extends Component {
     console.log(data);
     return data;
   };
-
   render() {
     return (
       <div>

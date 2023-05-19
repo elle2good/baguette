@@ -239,6 +239,106 @@
   margin-top: 60px;
 }
 
+.box-landing .box-works .btn-works-more {
+  width: 130px;
+  margin: 40px 0;
+  padding: 7px 10px;
+  background: none;
+  border: 1px solid #2d712a;
+  color: #2d712a;
+  font-size: 13pt;
+}
+
+.box-landing .box-works .txt-works-list > li.txt-works-list-2nd {
+  padding-left: 20px;
+}
+
+.box-landing .box-works .box-level {
+  display: flex;
+  flex-direction: column;
+  font-size: 12pt;
+  font-weight: 300;
+}
+
+.box-landing .box-works .box-level .txt-level-title {
+  margin: 100px 0 20px;
+  font-size: 14pt;
+  font-weight: 700;
+}
+
+.box-landing .box-works .box-level .box-level-description {
+  width: 100%;
+  height: 270px;
+  margin-bottom: 15px;
+  padding: 30px 18px;
+}
+
+.box-landing .box-works .box-level .box-level-description.box-level-sky {
+  color: #ffffff;
+  background-color: #9bbec9;
+}
+
+.box-landing .box-works .box-level .box-level-description.box-level-brown-line {
+  color: #968162;
+  border: 1px solid #968162;
+}
+
+.box-landing .box-works .box-level .box-level-description.box-level-brown {
+  color: #ffffff;
+  background-color: #968162;
+}
+
+.box-landing .box-works .box-level .box-level-description.box-level-pink {
+  color: #ffffff;
+  background-color: #ff7db6;
+}
+
+.box-landing .box-works .box-level .box-level-description > p:nth-child(2) {
+  font-weight: 700;
+}
+
+.box-landing .box-works .box-level .box-level-description .img-level-croutons {
+  width: 30%;
+  margin-bottom: 60px;
+}
+
+.box-landing .box-works .box-level .box-level-description .img-level-baguette {
+  width: 30%;
+  margin-bottom: 105px;
+}
+
+.box-landing
+  .box-works
+  .box-level
+  .box-level-description
+  .img-level-garlic-bread {
+  width: 30%;
+  margin-bottom: 90px;
+}
+
+.box-landing
+  .box-works
+  .box-level
+  .box-level-description
+  .img-level-bruschetta {
+  width: 32%;
+  margin-bottom: 90px;
+}
+
+.box-landing
+  .box-works
+  .box-level
+  .box-level-description
+  .img-level-sandwiches {
+  width: 40%;
+  margin-bottom: 85px;
+}
+
+.box-landing .box-works .box-level .box-level-description .img-level-canapes {
+  width: 30%;
+  margin-bottom: 65px;
+}
+
 /* /////////// */
 /* Set Profile */
 /* /////////// */
@@ -268,6 +368,7 @@
   align-items: center;
   width: 150px;
   height: 150px;
+  margin: 0 auto;
   border-radius: 75px;
   overflow: hidden;
 }

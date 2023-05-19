@@ -47,7 +47,7 @@ const Nav = () => {
 
   return (
     <div>
-      <div id="bgNav" className="box-nav bg-pink">
+      <div id="bgNav" className="box-nav">
         <button className="btn-nav-main" onClick={goToMain}>
           Baguette
         </button>

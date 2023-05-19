@@ -5,6 +5,12 @@ import baguetteImg from "../images/img_baguette.png";
 import Fox from "../images/lg_metamask.png";
 import baguetteCharImg from "../images/img_baguette_character.png";
 import breadCrumbTrailImg from "../images/img_breadcrumb_trail.png";
+import levelCroutonsImg from "../images/img_level_croutons.png";
+import levelBaguetteImg from "../images/img_level_baguette.png";
+import levelGarlicBreadImg from "../images/img_level_garlic_bread.png";
+import levelBruschettaImg from "../images/img_level_bruschetta.png";
+import levelSandwichesImg from "../images/img_level_sandwiches.png";
+import levelCanapesImg from "../images/img_level_canapes.png";
 
 const LandingPage = ({
   state,
@@ -117,6 +123,97 @@ const LandingPage = ({
           receive Crumbs. The post goes through a community voting system, and
           the highest ranked posts will receive rewards.
         </p>
+        <p className="txt-works-subtitle">Crumbs</p>
+        <p className="txt-works-sub">
+          Tokens in the Baguette ecosystem. Crumbs are not just a
+          cryptocurrency, but it is a symbol of commitment to the well-being of
+          our society and environment.
+        </p>
+        <ul className="txt-works-list">
+          <li>• Crumbs are rewarded to the leaders of a Gathering by their,</li>
+          <li className="txt-works-list-2nd">
+            • Community impact (eg. number of participants that successfully
+            completed the gathering)
+          </li>
+          <li className="txt-works-list-2nd">
+            • Social impact (eg. number of users that support the cause)
+          </li>
+          <li className="txt-works-list-2nd">
+            • Environmental impact (achieved carbon reduction from the
+            gathering)
+          </li>
+          <li>
+            • Crumbs are rewarded to any user if their posts on the Breadcrumb
+            Trail is voted and ranked as recognizable impact by other users.
+          </li>
+        </ul>
+        <p className="txt-works-sub">
+          Crumbs can be sent and received as donations in between users that
+          support the same cause.
+        </p>
+        <p className="txt-works-subtitle">Bakeshop (Coming soon)</p>
+        <p className="txt-works-sub">
+          An NFT Marketplace that sells Art & Utility NFT with proceeds going to
+          a social or environmental cause.
+        </p>
+        <div className="box-level">
+          <p className="txt-level-title">Levels</p>
+          <div className="box-level-description box-level-sky">
+            <img
+              className="img-level-croutons"
+              src={levelCroutonsImg}
+              alt="img-level-croutons"
+            />
+            <p>Croutons:</p>
+            <p>Comming Soon</p>
+          </div>
+          <div className="box-level-description box-level-brown-line">
+            <img
+              className="img-level-baguette"
+              src={levelBaguetteImg}
+              alt="img-level-baguette"
+            />
+            <p>Baguette:</p>
+            <p>Comming Soon</p>
+          </div>
+          <div className="box-level-description box-level-brown">
+            <img
+              className="img-level-garlic-bread"
+              src={levelGarlicBreadImg}
+              alt="img-level-garlic-bread"
+            />
+            <p>Garlic Bread:</p>
+            <p>Comming Soon</p>
+          </div>
+          <div className="box-level-description box-level-pink">
+            <img
+              className="img-level-bruschetta"
+              src={levelBruschettaImg}
+              alt="img-level-bruschetta"
+            />
+            <p>Bruschetta:</p>
+            <p>Comming Soon</p>
+          </div>
+          <div className="box-level-description box-level-sky">
+            <img
+              className="img-level-sandwiches"
+              src={levelSandwichesImg}
+              alt="img-level-sandwiches"
+            />
+            <p>Sandwiches:</p>
+            <p>Comming Soon</p>
+          </div>
+          <div className="box-level-description box-level-brown-line">
+            <img
+              className="img-level-canapes"
+              src={levelCanapesImg}
+              alt="img-level-canapes"
+            />
+            <p>Canapes:</p>
+            <p>Comming Soon</p>
+          </div>
+        </div>
+        <button className="btn-works-more">Learn more</button>
       </div>
       {/* <p>잔액: {parseFloat(state.ethereumBalance).toFixed(4)} ETH</p>
       <p>토큰 잔액 ≈ {tokenBalance} CRB</p>
