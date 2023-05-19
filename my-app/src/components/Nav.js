@@ -51,34 +51,45 @@ const Nav = () => {
         <button className="btn-nav-main" onClick={goToMain}>
           Baguette
         </button>
-        <input
-          type="checkbox"
-          id="btnMenu"
-          onChange={toggleMenu}
-          checked={toggleCheck}
-        />
-        <label htmlFor="btnMenu" className="btn-menu-toggle">
-          <div className="btn-menu-bars" id="bar1"></div>
-          <div className="btn-menu-bars" id="bar2"></div>
-          <div className="btn-menu-bars" id="bar3"></div>
-        </label>
+        <div className="btn-menu-toggle" onClick={toggleMenu}>
+          <div className="square" id="sq1"></div>
+          <div className="square" id="sq2"></div>
+          <div className="square" id="sq3"></div>
+          <div className="square" id="sq4"></div>
+          <div className="square" id="sq5"></div>
+          <div className="square" id="sq6"></div>
+          <div className="square" id="sq7"></div>
+          <div className="square" id="sq8"></div>
+          <div className="square" id="sq9"></div>
+        </div>
       </div>
       <style jsx="true">
         {`
           .box-menu {
             display: ${toggleOpen ? "flex" : "none"};
           }
+
+          .box-nav .btn-menu-toggle {
+            background-color: ${toggleOpen ? "#2d712a" : "none"};
+          }
+
+          .square {
+            background: ${toggleOpen ? "#ffffff" : "#2d712a"};
+          }
         `}
       </style>
       <div className="box-menu">
+        <button className="btn-nav" onClick={goToMain}>
+          Main
+        </button>
         <button className="btn-nav" onClick={goToAbout}>
           About
         </button>
         <button className="btn-nav" onClick={goToBreadcrumbTrail}>
-          Breadcrumb Trail
+          How it Works
         </button>
         <button className="btn-nav" onClick={goToGatherings}>
-          Gatherings
+          BakeShop<p>(Comming soon)</p>
         </button>
         <button className="btn-nav" onClick={goToProfile}>
           Profile

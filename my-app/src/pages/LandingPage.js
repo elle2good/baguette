@@ -164,8 +164,10 @@ const LandingPage = ({
               src={levelCroutonsImg}
               alt="img-level-croutons"
             />
-            <p>Croutons:</p>
-            <p>Comming Soon</p>
+            <div>
+              <p>Croutons:</p>
+              <p>Comming Soon</p>
+            </div>
           </div>
           <div className="box-level-description box-level-brown-line">
             <img
@@ -173,8 +175,10 @@ const LandingPage = ({
               src={levelBaguetteImg}
               alt="img-level-baguette"
             />
-            <p>Baguette:</p>
-            <p>Comming Soon</p>
+            <div>
+              <p>Baguette:</p>
+              <p>Comming Soon</p>
+            </div>
           </div>
           <div className="box-level-description box-level-brown">
             <img
@@ -182,8 +186,10 @@ const LandingPage = ({
               src={levelGarlicBreadImg}
               alt="img-level-garlic-bread"
             />
-            <p>Garlic Bread:</p>
-            <p>Comming Soon</p>
+            <div>
+              <p>Garlic Bread:</p>
+              <p>Comming Soon</p>
+            </div>
           </div>
           <div className="box-level-description box-level-pink">
             <img
@@ -191,8 +197,10 @@ const LandingPage = ({
               src={levelBruschettaImg}
               alt="img-level-bruschetta"
             />
-            <p>Bruschetta:</p>
-            <p>Comming Soon</p>
+            <div>
+              <p>Bruschetta:</p>
+              <p>Comming Soon</p>
+            </div>
           </div>
           <div className="box-level-description box-level-sky">
             <img
@@ -200,8 +208,10 @@ const LandingPage = ({
               src={levelSandwichesImg}
               alt="img-level-sandwiches"
             />
-            <p>Sandwiches:</p>
-            <p>Comming Soon</p>
+            <div>
+              <p>Sandwiches:</p>
+              <p>Comming Soon</p>
+            </div>
           </div>
           <div className="box-level-description box-level-brown-line">
             <img
@@ -209,8 +219,10 @@ const LandingPage = ({
               src={levelCanapesImg}
               alt="img-level-canapes"
             />
-            <p>Canapes:</p>
-            <p>Comming Soon</p>
+            <div>
+              <p>Canapes:</p>
+              <p>Comming Soon</p>
+            </div>
           </div>
         </div>
         <button className="btn-works-more">Learn more</button>
