@@ -14,7 +14,7 @@
 
 /**
  * Baguette
- * @leader Elisabeth Kim, Sueun Cho
+ * @leader Elisabeth Kim
  * @developer Sueun Cho, Rok, 은빈
  * @artist Lily
  * @date 2023-05-12
@@ -74,7 +74,7 @@ class App extends Component {
   state = {
     web3: null, //Info of Web3
     currentAccounts: null, //Current accounts
-    //Smart contract accounts
+    //Smart contract accounts < change to zkEvm
     ERC20contractAddress: "0x1B8a1215ae41D37d01CcC7E36aB64EA43E9F12B8",
     ERC721contractAddress: "0xA2540ea136f6F91D553bA744Cff9E1585681CC16",
     ERC1155contractAddress: "0x675fC7622953961E45F4Ff17d82680A0Aad6C6A9",
@@ -101,15 +101,18 @@ class App extends Component {
     currentPage: 0, //Vote page
   };
 
+  //web3
   getWeb3 = () => {
     return this.state.web3;
   };
 
+  //컨트랙트의 기본요소를 가져옵니다.
   getTokenContract = (ABI, contractAddress) => {
     const web3 = this.getWeb3();
     return new web3.eth.Contract(ABI, contractAddress);
   };
 
+  //시작함수
   async componentDidMount() {
     //await this.connectToMetaMask();
     this.setupAccountsChangedEventListener();
@@ -123,12 +126,14 @@ class App extends Component {
     console.log(page);
   };
 
+  //account가 변경되었을때 작동합니다.
   setupAccountsChangedEventListener = () => {
     window.ethereum.on("accountsChanged", async () => {
       await this.handleAccountChanged();
     });
   };
 
+  //network가 변경되었을때 작동합니다.
   setupNetworkChangedEventListener = () => {
     window.ethereum.on("networkChanged", async () => {
       await this.handleNetworkChanged();
@@ -181,7 +186,7 @@ class App extends Component {
     await this.handleAccountChanged();
   };
 
-  //Check MetaMask install
+  //Check MetaMask install 메타마스크가 연결할수 있는 조건인지 확인
   checkMetaMaskInstallation = async () => {
     if (typeof window.ethereum === "undefined") {
       alert(
@@ -192,7 +197,7 @@ class App extends Component {
     return true;
   };
 
-  //Connect MetaMask
+  //Connect MetaMask 커넥트 메타마스크 버튼을 눌러서 작동되는 함수
   connectToMetaMask = async () => {
     if (await this.checkMetaMaskInstallation()) {
       try {
@@ -207,6 +212,7 @@ class App extends Component {
     }
   };
 
+  //Send Transcation -> 쉽게 생각해서 메타마스크 화면 여는거 (이더 보낼꺼냐 아니면 스마트 컨트랙트 작동 시킬꺼냐)
   sendTransaction = async (from, to, data, value) => {
     const web3 = this.getWeb3();
     try {
@@ -231,6 +237,7 @@ class App extends Component {
     }
   };
 
+  //이더리움 전송 ()매개변수에는 to - 보낼사람, value - 양 (wei, eth)
   transferETH = async (to, value) => {
     try {
       await this.sendTransaction(
@@ -244,6 +251,7 @@ class App extends Component {
     }
   };
 
+  //NFT 오너 체크 -> 실행주기 -> 현재지갑을 확인하고 그 다음 getTokenContract로 접근해서 balanceOf 확인
   checkNFTOwner = async () => {
     if (
       !this.state.currentAccounts ||
@@ -267,6 +275,7 @@ class App extends Component {
   //   Token   //
   ///////////////
 
+  //간단히 말해서 token transfer
   transferToken = async (to, value) => {
     const tokenContract = this.getTokenContract(
       ERC20,
@@ -285,6 +294,7 @@ class App extends Component {
     }
   };
 
+  //컨트롤러 추가
   fAddController = async (to) => {
     const tokenContract = this.getTokenContract(
       ERC20,
@@ -304,6 +314,7 @@ class App extends Component {
     }
   };
 
+  //컨트롤러 제거
   fRemoveController = async (to) => {
     const tokenContract = this.getTokenContract(
       ERC20,
@@ -323,6 +334,7 @@ class App extends Component {
     }
   };
 
+  //토큰의 밸런스
   fTokenBalanceOf = async () => {
     const web3 = this.getWeb3();
     const tokenContract = this.getTokenContract(
@@ -339,12 +351,23 @@ class App extends Component {
     return tokenBalanceOfTruncated;
   };
 
+  //총 발행된 토큰의 양
+  fTokenTotalSupply = async () => {
+    const tokenContract = this.getTokenContract(
+      ERC20,
+      this.state.ERC20contractAddress
+    );
+    const VTokenTotalSupply = await tokenContract.methods.totalSupply().call();
+
+    return VTokenTotalSupply;
+  };
+
+  //토큰을 add 합니다.
   addTokenToMetaMask = async () => {
     const tokenAddress = this.state.ERC20contractAddress;
     const tokenSymbol = "CRB"; // 토큰 심볼을 적어주세요.
     const tokenDecimals = 18; // 토큰의 소수점 자릿수를 적어주세요.
-    const tokenImage =
-      "https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/Qmbkf8wJzuMUQEFWGDq6sYb6qjcejQTC9CNf7jj8v98pME/1.png"; // 토큰 이미지 URL을 적어주세요.
+    const tokenImage = "https://ibb.co/djK7BFC"; // 토큰 이미지 URL을 적어주세요.
 
     try {
       // MetaMask에 토큰을 추가하는 메서드를 사용합니다.
@@ -369,6 +392,7 @@ class App extends Component {
   //   NFT   //
   /////////////
 
+  //NFT 판매를 시작합니다.
   fSetSale = async () => {
     const tokenContract = this.getTokenContract(
       ERC721,
@@ -388,6 +412,7 @@ class App extends Component {
     }
   };
 
+  //MintByETH 함수를 실행시킵니다.
   fMintByETH = async (nickname) => {
     // 매개변수 nickname 추가
     const web3 = this.getWeb3();
@@ -411,6 +436,7 @@ class App extends Component {
     }
   };
 
+  //team이 민팅할수있는 함수 입니다.
   fTeamMint = async () => {
     const web3 = this.getWeb3();
     const contract = this.getTokenContract(
@@ -432,6 +458,7 @@ class App extends Component {
     }
   };
 
+  //image를 fetch하는 함수입니다.
   fetchImageMetadata = async () => {
     if (
       !this.state.currentAccounts ||
@@ -455,10 +482,7 @@ class App extends Component {
 
       // 만약 토큰의 소유자가 사용자와 일치한다면, 해당 토큰 ID를 처리합니다.
       if (owner === this.state.currentAccounts[0]) {
-        console.log("good");
-        //const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmNNwDPUrmYJAMcWVh5sK6VMbargoUKJTFi6qfMTxCeuWu/${tokenId}`;
-        const metadataUrl = `http://localhost:3000/json/${tokenId}`;
-        console.log(metadataUrl);
+        const metadataUrl = `https://lime-wonderful-skunk-419.mypinata.cloud/ipfs/QmPJHgfcuSffRa9ZmAWoQsMZDMe8KMyP2G4dNddJBZutSi/${tokenId}`;
         try {
           const response = await fetch(metadataUrl);
           const metadata = await response.json();
@@ -473,6 +497,7 @@ class App extends Component {
     }
   };
 
+  //닉네임 함수입니다.
   fNickname = async (id) => {
     const tokenContract = this.getTokenContract(
       ERC721,
@@ -485,6 +510,7 @@ class App extends Component {
     return myNickname;
   };
 
+  //TokenApprove를 통해서 크럼블을 폴리곤으로 바꾸기 전에 실행해야하는 함수입니다.
   fTokenApprove = async (getCrumb) => {
     const tokenContract = new this.getTokenContract(
       ERC20,
@@ -507,11 +533,23 @@ class App extends Component {
     }
   };
 
+  //현재까지 팔린 NFT를 보여줍니다.
+  fTotalSupply = async () => {
+    const tokenContract = this.getTokenContract(
+      ERC721,
+      this.state.ERC721contractAddress
+    );
+    const VTotalSupply = await tokenContract.methods.totalSupply().call();
+
+    return VTotalSupply;
+  };
+
   /////////////////
   //   ERC1155   //
   /////////////////
 
   /* 수정사항 필요 < id 값을 받아와야함 */
+  //FT를 민팅하는 함수 입니다.
   fMintByETH_FT = async (id) => {
     const web3 = this.getWeb3();
     const contract = this.getTokenContract(
@@ -519,7 +557,6 @@ class App extends Component {
       this.state.ERC1155contractAddress
     );
     const price = web3.utils.toWei("1", "wei"); // 수정된 코드
-    console.log(price);
     if (price === 1) {
       console.log("true");
     }
@@ -544,6 +581,7 @@ class App extends Component {
     }
   };
 
+  //Balance를 확인하는 함수 입니다.
   fBalanceOf = async (id) => {
     const tokenContract = this.getTokenContract(
       ERC1155,
@@ -552,10 +590,10 @@ class App extends Component {
     const tokenId = await tokenContract.methods
       .balanceOf(this.state.currentAccounts[0], id)
       .call();
-    console.log(tokenId);
     return tokenId;
   };
 
+  //setApprovalForAll을 통해 컨트랙트 접근을 허용하는 함수입니다.
   fSetApprovalForAll = async () => {
     const tokenContract = this.getTokenContract(
       ERC1155,
@@ -582,6 +620,7 @@ class App extends Component {
   //  REWARD  //
   //////////////
 
+  //클레임 함수입니다. 솔리디티코드에서 자세히 확인 가능합니다.
   fCheckAndClaimGoodToken = async (vote) => {
     const tokenContract = this.getTokenContract(
       Reward,
@@ -604,6 +643,7 @@ class App extends Component {
     }
   };
 
+  //크럼블을 폴리곤으로 교환하는 함수입니다.
   fExchangeEther = async (getPrice) => {
     const web3 = this.getWeb3();
     const contract = this.getTokenContract(
@@ -628,6 +668,7 @@ class App extends Component {
     }
   };
 
+  //vote를 시작하는 함수입니다. (vote를 열 수 있습니다.)
   fStartVote = async () => {
     const web3 = this.getWeb3();
     const contract = this.getTokenContract(
@@ -651,6 +692,7 @@ class App extends Component {
     }
   };
 
+  //투표하는 함수 입니다.
   fVote = async (id, is) => {
     const contract = this.getTokenContract(
       Reward,
@@ -671,6 +713,7 @@ class App extends Component {
     }
   };
 
+  //투표의 상황을 모두 보는 함수입니다.
   fVotes_view = async (id) => {
     const contract = this.getTokenContract(
       Reward,
@@ -687,7 +730,6 @@ class App extends Component {
       .getNickname(data.proposer)
       .call();
 
-    console.log(proposerId);
     // 필요한 정보만 선택
     const filteredData = {
       id: proposerId,
@@ -700,10 +742,10 @@ class App extends Component {
       rewardClaimed: data.rewardClaimed,
     };
 
-    console.log(filteredData);
     return filteredData;
   };
 
+  //투표를 했는지 안했는지 확인하는 함수입니다.
   fHasVoted = async (id) => {
     const contract = this.getTokenContract(
       Reward,
@@ -714,9 +756,9 @@ class App extends Component {
       .hasVoted(this.state.currentAccounts[0], id)
       .call();
 
-    console.log(data);
     return data;
   };
+
   render() {
     return (
       <div>
