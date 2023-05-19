@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-// logo
-import lgBaguette from "../images/lg_baguette.png";
 
 const Nav = () => {
   const navigate = useNavigate();

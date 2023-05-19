@@ -15,7 +15,7 @@
 /**
  * Baguette
  * @leader Elisabeth Kim
- * @developer Sueun Cho, Rok, 은빈
+ * @developer Sueun Cho, Rok Kwak, Eunbeen Jung
  * @artist Lily
  * @date 2023-05-12
  * @description Baguette Eco Company
@@ -38,11 +38,6 @@ import ERC721 from "./abi/ERC721.json";
 import ERC1155 from "./abi/ERC1155.json";
 import Reward from "./abi/Reward.json";
 
-////////////////
-// API import //
-////////////////
-import { Wrapper } from "@googlemaps/react-wrapper";
-
 /////////////////
 // Page import //
 /////////////////
@@ -50,7 +45,6 @@ import LandingPage from "./pages/LandingPage";
 import AboutPage from "./pages/AboutPage";
 import BreadcrumbTrailPage from "./pages/BreadcrumbTrailPage";
 import GatheringsPage from "./pages/GatheringsPage";
-import GatheringProfilePage from "./pages/GatheringProfilePage";
 import ProfilePage from "./pages/ProfilePage";
 import SetProfilePage from "./pages/SetProfilePage";
 // 삭제 예정
@@ -68,16 +62,10 @@ import NFTTeamMintPage from "./pages/admin/NFTTeamMintPage";
 //////////////////////
 import Nav from "./components/Nav";
 
-
 /////////
 // CSS //
 /////////
 import "./App.css";
-
-///////////////////
-// place library //
-/////////////////// 
-const placesLibrary = ['places']
 
 ///////////////
 // App Class //
@@ -130,14 +118,6 @@ class App extends Component {
     this.setupAccountsChangedEventListener();
     this.setupNetworkChangedEventListener();
     this.fetchImageMetadata();
-
-    // 구글맵 로드 (api키), 라이브러리
-    this.loadScript();
-    // 현재위치 찍기
-    navigator.geolocation.getCurrentPosition((position) => {
-      const { latitude, longitude } = position.coords;
-      this.setState({ currentLocation: { lat: latitude, lng: longitude } });
-    });
   }
 
   //handlePageChange는 VotePage.js에서 투표 페이지를 보여줌
@@ -779,171 +759,138 @@ class App extends Component {
     return data;
   };
 
-  ///////////////
-  //////지도//////
-  ///////////////
-  constructor(props) {
-    super(props);
-    this.state = {
-      id: "",
-      currentLocation: null,
-      isLoaded: false,
-    };
-  }
-
-  loadScript() {
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_MAP_API}&libraries=${placesLibrary.join(',')}`;
-    script.async = true;
-    script.onload = () => {
-      this.setState({ isLoaded: true });
-    };
-    document.body.appendChild(script);
-  }
-
-  handleChange(e) {
-    this.setState({ id: e.target.value });
-  }
-
-
-
   render() {
-    const { isLoaded, currentLocation } = this.state;
     return (
-        <div>
-          <Nav />
-          <Wrapper apiKey={process.env.REACT_APP_MAP_API}>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <LandingPage
-                    state={this.state}
-                    connectToMetaMask={this.connectToMetaMask}
-                    fetchImageMetadata={this.fetchImageMetadata}
-                    fTokenBalanceOf={this.fTokenBalanceOf}
-                    addTokenToMetaMask={this.addTokenToMetaMask}
-                    fNickname={this.fNickname}
-                  />
-                }
+      <div>
+        <Nav />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <LandingPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fetchImageMetadata={this.fetchImageMetadata}
+                fTokenBalanceOf={this.fTokenBalanceOf}
+                addTokenToMetaMask={this.addTokenToMetaMask}
+                fNickname={this.fNickname}
               />
-              {/* Menu */}
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/breadcrumb" element={<BreadcrumbTrailPage />} />
-              <Route path="/gatherings" element={<GatheringsPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
+            }
+          />
+          {/* Menu */}
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/breadcrumb" element={<BreadcrumbTrailPage />} />
+          <Route path="/gatherings/*" element={<GatheringsPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
 
-              {/* Set Profile */}
-              <Route
-                path="/set_profile"
-                element={
-                  <SetProfilePage
-                    state={this.state}
-                    connectToMetaMask={this.connectToMetaMask}
-                    fetchImageMetadata={this.fetchImageMetadata}
-                    fMintByETH={this.fMintByETH}
-                  />
-                }
+          {/* Set Profile */}
+          <Route
+            path="/set_profile"
+            element={
+              <SetProfilePage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fetchImageMetadata={this.fetchImageMetadata}
+                fMintByETH={this.fMintByETH}
               />
-              {/* 지도 */}
-              <Route path='/gatherings' element={isLoaded && <GatheringsPage currentLocation={currentLocation} />} />
+            }
+          />
 
-              <Route path='/gatherings/:id' element={<GatheringProfilePage />} />
-              {/* 임시 페이지 (삭제 예정) */}
-              <Route
-                path="/eth_transfer"
-                element={
-                  <ETHTransferPage
-                    state={this.state}
-                    connectToMetaMask={this.connectToMetaMask}
-                    transferETH={this.transferETH}
-                  />
-                }
+          {/* 임시 페이지 (삭제 예정) */}
+          <Route
+            path="/eth_transfer"
+            element={
+              <ETHTransferPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                transferETH={this.transferETH}
               />
-              <Route
-                path="/token_transfer"
-                element={
-                  <TokenTransferPage
-                    state={this.state}
-                    connectToMetaMask={this.connectToMetaMask}
-                    transferToken={this.transferToken}
-                  />
-                }
+            }
+          />
+          <Route
+            path="/token_transfer"
+            element={
+              <TokenTransferPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                transferToken={this.transferToken}
               />
-              <Route
-                path="/nft_mint"
-                element={
-                  <NFTMintPage
-                    state={this.state}
-                    connectToMetaMask={this.connectToMetaMask}
-                    fMintByETH={this.fMintByETH}
-                  />
-                }
+            }
+          />
+          <Route
+            path="/nft_mint"
+            element={
+              <NFTMintPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fMintByETH={this.fMintByETH}
               />
-              <Route
-                path="/ft_mint"
-                element={
-                  <FTMintPage
-                    state={this.state}
-                    connectToMetaMask={this.connectToMetaMask}
-                    fMintByETH_FT={this.fMintByETH_FT}
-                    fBalanceOf={this.fBalanceOf}
-                    fCheckAndClaimGoodToken={this.fCheckAndClaimGoodToken}
-                  />
-                }
+            }
+          />
+          <Route
+            path="/ft_mint"
+            element={
+              <FTMintPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fMintByETH_FT={this.fMintByETH_FT}
+                fBalanceOf={this.fBalanceOf}
+                fCheckAndClaimGoodToken={this.fCheckAndClaimGoodToken}
               />
-              <Route
-                path="/exchange_token"
-                element={
-                  <ExchangeTokenPage
-                    state={this.state}
-                    connectToMetaMask={this.connectToMetaMask}
-                    fExchangeEther={this.fExchangeEther}
-                  />
-                }
+            }
+          />
+          <Route
+            path="/exchange_token"
+            element={
+              <ExchangeTokenPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fExchangeEther={this.fExchangeEther}
               />
-              <Route
-                path="/vote"
-                element={
-                  <VotePage
-                    state={this.state}
-                    connectToMetaMask={this.connectToMetaMask}
-                    fStartVote={this.fStartVote}
-                    fVote={this.fVote}
-                    fVotes_view={this.fVotes_view}
-                    voteData={this.state.voteData}
-                    currentPage={this.state.currentPage}
-                    onPageChange={this.handlePageChange} // Pass handlePageChange to VotePage
-                    fHasVoted={this.fHasVoted}
-                    fSetApprovalForAll={this.fSetApprovalForAll}
-                  />
-                }
+            }
+          />
+          <Route
+            path="/vote"
+            element={
+              <VotePage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fStartVote={this.fStartVote}
+                fVote={this.fVote}
+                fVotes_view={this.fVotes_view}
+                voteData={this.state.voteData}
+                currentPage={this.state.currentPage}
+                onPageChange={this.handlePageChange} // Pass handlePageChange to VotePage
+                fHasVoted={this.fHasVoted}
+                fSetApprovalForAll={this.fSetApprovalForAll}
               />
-              <Route
-                path="/admin/controller"
-                element={
-                  <ControllerPage
-                    state={this.state}
-                    connectToMetaMask={this.connectToMetaMask}
-                    fAddController={this.fAddController}
-                    fRemoveController={this.fRemoveController}
-                    fSetSale={this.fSetSale}
-                  />
-                }
+            }
+          />
+          <Route
+            path="/admin/controller"
+            element={
+              <ControllerPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fAddController={this.fAddController}
+                fRemoveController={this.fRemoveController}
+                fSetSale={this.fSetSale}
               />
-              <Route
-                path="/admin/team_mint"
-                element={
-                  <NFTTeamMintPage
-                    state={this.state}
-                    connectToMetaMask={this.connectToMetaMask}
-                    fTeamMint={this.fTeamMint}
-                  />
-                }
+            }
+          />
+          <Route
+            path="/admin/team_mint"
+            element={
+              <NFTTeamMintPage
+                state={this.state}
+                connectToMetaMask={this.connectToMetaMask}
+                fTeamMint={this.fTeamMint}
               />
-            </Routes>
-          </Wrapper>
-        </div>)
+            }
+          />
+        </Routes>
+      </div>
+    );
   }
 }
 

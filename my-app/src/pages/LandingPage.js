@@ -54,9 +54,8 @@ const LandingPage = ({
         <img src={baguetteImg} alt="baguette image" />
         <p className="txt-main-sub">
           By connecting communities and impact leaders closely and transparently
-          with blockchain, Baguette aims to streamline community trust and
-          funding for individuals and and small organizations that want to make
-          a difference.
+          with blockchain, Baguette brings trust and funding to both formal and
+          informal volunteers.
         </p>
       </div>
       <button className="btn-signin" onClick={connectToMetaMask}>
