@@ -1,11 +1,56 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import imgProfileBg from "../images/img_profile_bg.png";
 import imglevelGarlicBread from "../images/img_level_garlic_bread.png";
 
+// 이미지 업로드
+import ImagesUpload from "react-images-upload";
+import axios from "axios";
+
 const ProfilePage = ({ state }) => {
   const navigate = useNavigate();
+
+  //////////////////
+  // Image Upload //
+  //////////////////
+  const dbUrl = process.env.REACT_APP_DB_CONNECT;
+
+  const [images, setImages] = useState([]);
+
+  const onDrop = (files) => {
+    setImages([...images, ...files]);
+  };
+
+  const removeImage = (index) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setImages(newImages);
+  };
+
+  const uploadImage = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+
+    // 이미지 파일들을 formData에 추가
+    for (let i = 0; i < images.length; i++) {
+      formData.append("images", images[i]);
+    }
+
+    try {
+      console.log("jere", dbUrl);
+      const response = await axios.post(dbUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log(response.data.message);
+      // 서버 응답에 대한 처리 추가
+    } catch (error) {
+      console.error("Failed to upload image:", error);
+      // 에러 처리 추가
+    }
+  };
 
   // useEffect(() => {
   //   if (!state.imageUrl) {
@@ -54,6 +99,23 @@ const ProfilePage = ({ state }) => {
           <img src="" alt="" />
           <img src="" alt="" />
           <img src="" alt="" />
+        </div>
+        <div>
+          <ImagesUpload
+            className="images-preview"
+            onChange={onDrop}
+            imgExtension={[".jpg", ".png", ".gif", ".jpeg"]}
+            maxFileSize={5242880}
+          />
+          <div className="image-list">
+            {images.map((image, index) => (
+              <div key={index} className="image-item">
+                {/* <img src={URL.createObjectURL(image)} alt="uploaded" /> */}
+                <button onClick={() => removeImage(index)}>Remove</button>
+              </div>
+            ))}
+          </div>
+          <button onClick={uploadImage}>Upload</button>
         </div>
       </div>
     </div>
