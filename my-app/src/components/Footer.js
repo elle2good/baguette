@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import lgBaguette from "../images/lg_baguette.png";
 import icInsta from "../images/ic_insta.png";

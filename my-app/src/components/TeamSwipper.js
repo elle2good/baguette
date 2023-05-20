@@ -64,7 +64,7 @@ const TeamSwipper = () => {
           <p className="txt-team-description">
             Designer
             <br />
-            insert your experience
+            5+ years experience, SojuDAO
           </p>
         </SwiperSlide>
         <SwiperSlide>
