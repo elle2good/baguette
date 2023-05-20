@@ -1,0 +1,46 @@
+{
+  "name": "Baguette #26",
+  "description": "A Baguette is a warm source of energy with a hard shell and soft inners, loved by people from every parts of the world including France, Vietnam, Korea and the United States. Follow the Baguette’s struggles to spread warmth and kindness around the world. Each drop has a social or environmental impact cause. @ [baguettes.io](http://baguettes.io/)",
+  "image": "https://violet-total-deer-519.mypinata.cloud/ipfs/QmXLBBGsbeSeWQBuNu4wDQ1a7xoo91KDtt4MUP1tCYo5uy/26.png",
+  "dna": "83d68ecc3c322375747d314c1cb9a9b98d5752b8",
+  "edition": 26,
+  "date": 1684300034015,
+  "attributes": [
+    {
+      "trait_type": "0-Background",
+      "value": "bg_cream"
+    },
+    {
+      "trait_type": "1-Body",
+      "value": "body_default_pink"
+    },
+    {
+      "trait_type": "2-Eyes",
+      "value": "eyes_cream"
+    },
+    {
+      "trait_type": "8-Pants",
+      "value": "pants_green"
+    },
+    {
+      "trait_type": "3-Mouth",
+      "value": "moustache_short_pink"
+    },
+    {
+      "trait_type": "4-Cheeks",
+      "value": "cheeks_blank"
+    },
+    {
+      "trait_type": "5-Accessories",
+      "value": "accessories_blank"
+    },
+    {
+      "trait_type": "6-Feet",
+      "value": "socks_blue"
+    },
+    {
+      "trait_type": "7-Head",
+      "value": "afro_flower"
+    }
+  ]
+}

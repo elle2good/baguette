@@ -1,0 +1,44 @@
+{
+    "locations":[
+        {
+            "id":0,
+            "img":"http://tong.visitkorea.or.kr/cms/resource/76/2780476_image2_1.png",
+            "title":"Campus Greening Initiative",
+            "location":"Hana Global Campus (하나글로벌캠퍼스)",
+            "sDate":"2023.05.19",
+            "eDate":"2023.06.01",
+            "sTime":"10:00 AM",
+            "eTime":"2:00 PM",
+            "lat":37.5504221,
+            "lng":126.6242955,
+            "organization":"Green May",
+            "description":"A Campus Greening Initiative is more than just a tree-planting event: it's a fun and interactive experience to give back to Mother Earth! Get ready to roll up your sleeves and get your hands a little dirty as we transform our campus into a green oasis. We're not just planting trees – we're sowing seeds of knowledge and growth, creating a living, breathing classroom that will stand tall for generations to come. With games, refreshments, and a bit of friendly competition, we're making eco-friendly fun! Get ready to leaf your mark, meet new friends, and enjoy a day under the open sky. Whether you're a seasoned planter or a first-time tree hugger, we can't wait to see you at the 'Branching Out: A Campus Greening Initiative'. Let's make our campus a little greener, one tree at a time."
+        },
+        {
+            "id":1,
+            "img":"https://lh5.googleusercontent.com/p/AF1QipOAlZNOwwcyHSCqja6kkSt-ukJDfsgWyulN-o9b=w408-h306-k-no",
+            "title":"Yoga by the Lake",
+            "location":"Cheongna Lake Park",
+            "sDate":"2023.05.19",
+            "eDate":"2023.06.01",
+            "sTime":"3:00 PM",
+            "eTime":"6:00 PM",
+            "lat":37.5378228,
+            "lng":126.6342741,
+            "organization":"NGO",
+            "description":"'Sunset Salutations: Yoga by the Lake' invites you to stretch, breathe, and find your Zen in the most serene setting - right by our beautiful lake! Let the gentle lapping of the lake's waves guide your breath and the soft rustling of leaves accompany your flow. No prior yoga experience? No worries! This event is perfect for beginners and seasoned yogis alike. Our certified instructors will guide you through poses and sequences that not only improve flexibility and strength, but also connect you deeply with the nature surrounding us. So, bring your yoga mat, invite your friends, and join us for 'Sunset Salutations: Yoga by the Lake'. Let's stretch towards sustainability, one pose at a time, and end the day feeling centered, rejuvenated, and deeply connected to the natural beauty around us. After all, life is better by the lake!"
+        },
+        {
+            "id":2,
+            "img":"https://lh5.googleusercontent.com/p/AF1QipNN9u-WnmXVsPLzfP2SCoIBN76bgZtq6UZbdsrg=w426-h240-k-no",
+            "title":"플라스틱 모으기",
+            "location":"공촌유수지체육공원",
+            "sDate":"2023.05.19",
+            "eDate":"2023.06.01",
+            "sTime":"",
+            "eTime":"",
+            "lat":37.5433854,
+            "lng":126.616005
+        }
+    ]
+}
