@@ -13,6 +13,31 @@
  */
 
 /**
+ * Copyright © 2023 Kyeongrok Kwak
+ * All rights reserved.
+​    No part of this node.js, react.js, css code, whether it be the source code, object code, or any derivative works thereof, may be reproduced, distributed, transmitted, displayed, published or broadcast, in whole or part, in any form, electronic or mechanical, photocopying, recording, scanning or any information storage and retrieval system now known or to be invented in future, without the prior written permission of the copyright owner, Kyeognrok Kwak.
+​    Unauthorized use and/or duplication of this material without express and written permission from this code's author and/or owner is strictly prohibited. Excerpts and links may be used, provided that full and clear credit is given to Kyeongrok Kwak with appropriate and specific direction to the original content.
+​    The node.js, react.js code is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and non-infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the code or the use or other dealings in the code.
+​    Information in this node.js, react.js, css code code is subject to change without notice. Other products and companies referred to herein are trademarks or registered trademarks of their respective companies or mark holders.
+​    For permissions requests, write to the author, at the address below:
+​    Kyeongrok Kwak
+    kyeongrok@naver.com
+ */
+
+/**
+ * /* Copyright © 2023 Eunbeen Jung
+    All rights reserved.
+    No part of this React.js code, whether it be the source code, object code, or any derivative works thereof, may be reproduced, distributed, transmitted, displayed, published or broadcast, in whole or part, in any form, electronic or mechanical, photocopying, recording, scanning or any information storage and retrieval system now known or to be invented in future, without the prior written permission of the copyright owner, Eunbeen Jung.
+    Unauthorized use and/or duplication of this material without express and written permission from this code's author and/or owner is strictly prohibited. Excerpts and links may be used, provided that full and clear credit is given to Eunbeen Jung with appropriate and specific direction to the original content.
+    The React.js code is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and non-infringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the code or the use or other dealings in the code.
+    Information in this React.js code is subject to change without notice. Other products and companies referred to herein are trademarks or registered trademarks of their respective companies or mark holders.
+    For permissions requests, write to the author, at the address below:
+    Eunbeen Jung
+    jungeb325@gmail.com
+*/
+
+
+/**
  * Baguette
  * @leader Elisabeth Kim
  * @developer Sueun Cho, Rok Kwak, Eunbeen Jung
