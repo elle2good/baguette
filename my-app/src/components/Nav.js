@@ -64,7 +64,7 @@ const Nav = ({ aboutRef, howItWorksRef }) => {
             }
 
             .box-nav {
-              background-color: ${scrollValue > 1775 ? "#f9e5c7" : "none"};
+              background-color: ${scrollValue > 1830 ? "#f9e5c7" : "none"};
             }
 
             .box-nav .btn-nav-main {
@@ -72,11 +72,11 @@ const Nav = ({ aboutRef, howItWorksRef }) => {
             }
 
             .box-nav .btn-nav-main {
-              color: ${scrollValue > 1775 ? "#2d712a" : "none"};
+              color: ${scrollValue > 1830 ? "#2d712a" : "none"};
             }
 
             .btn-menu-toggle .square {
-              background: ${scrollValue > 760 && scrollValue < 1776
+              background: ${scrollValue > 760 && scrollValue < 1830
                 ? "#ffffff"
                 : "#2d712a"};
             }

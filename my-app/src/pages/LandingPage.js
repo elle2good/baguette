@@ -1,17 +1,26 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-// import Img
+///////////////////
+// import Images //
+///////////////////
 import baguetteImg from "../images/img_baguette.png";
 import Fox from "../images/lg_metamask.png";
 import baguetteCharImg from "../images/img_baguette_character.png";
 import breadCrumbTrailImg from "../images/img_breadcrumb_trail.png";
+// level
+import levelBakerImg from "../images/img_level_baker.png";
 import levelCroutonsImg from "../images/img_level_croutons.png";
 import levelBaguetteImg from "../images/img_level_baguette.png";
 import levelGarlicBreadImg from "../images/img_level_garlic_bread.png";
 import levelBruschettaImg from "../images/img_level_bruschetta.png";
 import levelSandwichesImg from "../images/img_level_sandwiches.png";
 import levelCanapesImg from "../images/img_level_canapes.png";
+
+////////////////
+// Components //
+////////////////
+import TeamSwipper from "../components/TeamSwipper";
 
 const LandingPage = ({
   state,
@@ -104,23 +113,21 @@ const LandingPage = ({
           <li>• Permanent proof of kindness and care</li>
         </ul>
         <p className="txt-about-sub">
-          Baguette literally rewards individuals and organization for engaging
-          in third-sector activities and provides permanent proof of work.
-          Received rewards can be used to build more social impact, or simply to
-          have fun in online and offline recreations. Donations can be accepted
-          in small amounts with low transaction fees as means for individuals or
-          small organizations to bootstrap impact. Permanent proof of work on a
-          blockchain enables more trust towards yet-established organizations
-          and provides easier access to records for volunteers.
+          Baguette literally rewards individuals for engaging in third-sector
+          activities and provides permanent proof of work paving the way for
+          them to become an impact leader. Received rewards can be used to build
+          more social impact, make donations, or have fun in online and offline
+          recreations. Donations can be accepted in small amounts with low
+          transaction fees as means for individuals or small organizations to
+          bootstrap impact. Permanent proof of work on a blockchain enables more
+          trust towards yet-established organizations and provides easier access
+          to records for volunteers.
         </p>
       </div>
-      {/* <div>
-        <div>
-          <img />
-          <p>Name</p>
-          <p>description</p>
-        </div>
-      </div> */}
+      <div className="box-team">
+        <p className="txt-team-title">Out Team:</p>
+        <TeamSwipper />
+      </div>
       <div className="box-works" ref={howItWorksRef}>
         <img src={baguetteCharImg} alt="baguette Character" />
         <p className="txt-works-title">How it works:</p>
@@ -144,7 +151,7 @@ const LandingPage = ({
           <li>• Climate positivity</li>
         </ul>
         <p className="txt-works-sub">
-          All Sandwiches and the list of attendants are posted on a Blockchain
+          All Gatherings and the list of attendants are posted on a Blockchain
           for transparent and secure storage.
         </p>
         <button className="btn-works-more" onClick={goToGatherings}>
@@ -170,35 +177,49 @@ const LandingPage = ({
           cryptocurrency, but it is a symbol of commitment to the well-being of
           our society and environment.
         </p>
+        <p>Crumbs are rewarded to the leaders of a Gathering by their,</p>
         <ul className="txt-works-list">
-          <li>• Crumbs are rewarded to the leaders of a Gathering by their,</li>
-          <li className="txt-works-list-2nd">
+          <li>
             • Community impact (eg. number of participants that successfully
             completed the gathering)
           </li>
-          <li className="txt-works-list-2nd">
-            • Social impact (eg. number of users that support the cause)
-          </li>
-          <li className="txt-works-list-2nd">
+          <li>• Social impact (eg. number of users that support the cause)</li>
+          <li>
             • Environmental impact (achieved carbon reduction from the
             gathering)
           </li>
-          <li>
-            • Crumbs are rewarded to any user if their posts on the Breadcrumb
-            Trail is voted and ranked as recognizable impact by other users.
-          </li>
         </ul>
+        <p className="txt-works-sub">
+          Crumbs are rewarded to any user if their posts on the Breadcrumb Trail
+          is voted to rank as recognizable impact by other users.
+        </p>
         <p className="txt-works-sub">
           Crumbs can be sent and received as donations in between users that
           support the same cause.
         </p>
+        <button className="btn-works-more">Buy Crumbs (Coming soon)</button>
         <p className="txt-works-subtitle">Bakeshop (Coming soon)</p>
         <p className="txt-works-sub">
           An NFT Marketplace that sells Art & Utility NFT with proceeds going to
           a social or environmental cause.
         </p>
+        <button className="btn-works-more">Go to Bakeshop</button>
         <div className="box-level" ref={levelRef}>
           <p className="txt-level-title">Levels</p>
+          <div className="box-level-description box-level-brown">
+            <img
+              className="img-level-baker"
+              src={levelBakerImg}
+              alt="img-level-baker"
+            />
+            <div>
+              <p>Baker:</p>
+              <p>
+                Community admin of Baguette. Able to participate in activities
+                and send donations. Moderates posts and users.
+              </p>
+            </div>
+          </div>
           <div className="box-level-description box-level-sky">
             <img
               className="img-level-croutons"
@@ -289,7 +310,6 @@ const LandingPage = ({
             </div>
           </div>
         </div>
-        <button className="btn-works-more">Learn more</button>
       </div>
       {/* <p>잔액: {parseFloat(state.ethereumBalance).toFixed(4)} ETH</p>
       <p>토큰 잔액 ≈ {tokenBalance} CRB</p>

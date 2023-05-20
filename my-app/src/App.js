@@ -60,6 +60,7 @@ import NFTTeamMintPage from "./pages/admin/NFTTeamMintPage";
 // Component import //
 //////////////////////
 import Nav from "./components/Nav";
+import Footer from "./components/Footer";
 
 /////////
 // CSS //
@@ -895,6 +896,7 @@ class App extends Component {
             }
           />
         </Routes>
+        <Footer />
       </div>
     );
   }
